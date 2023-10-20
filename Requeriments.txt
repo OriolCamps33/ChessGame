@@ -1,0 +1,46 @@
+tablero
+    8 filas x 8 columnas
+
+
+piezas
+    Peon
+        solo uno hacia delante menos el movimiento inicial que pueden ser 2 casillas
+    caballo
+        se mueve en L
+    torre
+        se mueve en vertical y horizontal
+    alfil
+        se mueve en diagonal
+
+        
+    reina
+        se mueve como el alfil y la torre a la vez
+    rei
+        se mueve solo una posicion
+            puede hacer enroque en larga y corta
+
+turno
+    player 1 (blancas)
+    player 2 (negras)
+
+    empieza el player 1
+   
+   
+movimiento
+    no atrevesar
+    limitar movimientos en jaque
+    jaque
+    el rei no puede moverse a una casilla amenazada
+    en passant
+        si un peon contrario esta en fila 5 y muves un peon adyacente a fila 5, el peon contrario puede matar al tuyo
+    enroque
+        si no hay piezas y ni el rey ni la torre se han movido se puede enrocar
+    matar
+        cuando haces un movimiento a la misma casilla que otra pieza rival
+
+fin de partida
+    empate si un jugador no puede mover ninguna ficha
+    jaque mate
+
+
+vista al main
