@@ -2,11 +2,16 @@
 #include "Model/m_tablero.h"
 using namespace std;
 
+
+
 int main(int argc, char const* argv[])
 {
-    cout << "HOLA!!";
+    m_tablero tab;
+    tab.printaTablero();
+    bool res = tab.mover("a1 a3");
+    tab.printaTablero();
 }
 
 bool testMove() {
-    string move1 = "e5 f3";
-}
+    return true;
+}   

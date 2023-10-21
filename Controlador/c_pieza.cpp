@@ -4,24 +4,26 @@
 #include <string>
 using namespace std;
 
-bool m_peon::canMove(vector<int> posDesti)
+bool m_peon::canMove(int dstX, int dstY)
 {
-    vector<int> posActual = getPosicion();
+    int actRow = getRow();
+    int actCol = getCol();
+
     if (getColor() == 1) {
-        if (posActual[1] == posDesti[1] && posActual[0] < posDesti[0]) {
-            if((posActual[0] + 1) == posDesti[0])
+        if (actCol == dstY && actRow < dstX) {
+            if((actRow + 1) == dstX)
                 return true;
-            else if ((posActual[0] + 2) == posDesti[0] && posActual[0] == 1)
+            else if ((actRow+ 2) == dstX && firstMove)
                 return true;        
         }
         return false;
     }
     else {
-        if (posActual[1] == posDesti[1] && posActual[0] > posDesti[0]) {
-            if((posActual[0] - 1) == posDesti[0])
+        if (actCol == dstY && actRow > dstX) {
+            if ((actRow - 1) == dstX)
                 return true;
-            else if ((posActual[0] - 2) == posDesti[0] && posActual[0] == (MIDA_TAB - 1))
-                return true;        
+            else if ((actRow - 2) == dstX && firstMove)
+                return true;
         }
         return false;
     }
