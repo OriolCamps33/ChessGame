@@ -4,8 +4,8 @@
 #include "../Model/m_pieza.h"
 using namespace std;
 
-#define numRow 8
-#define numCol 8
+#define numRow 5
+#define numCol 5
 
 class m_tablero
 {
@@ -16,7 +16,8 @@ public:
     m_tablero();
     ~m_tablero() {};
 
-    bool mover(string move);
+    void mover(string move);
+    bool comprobarMove(string move);
     void printaTablero();
 };
 

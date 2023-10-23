@@ -21,15 +21,9 @@ m_tablero::m_tablero(){
     }
 
     // inicializamos todas las piezas
-    m_peon* peon1 = new m_peon(0, 0, 1, "PB");
-    m_peon* peon2 = new m_peon(0, 1, 1, "PB");
-    m_peon* peon3 = new m_peon(0, 2, 1, "PB");
-    m_peon* peon4 = new m_peon(1, 0, 1, "PB");
+    m_peon* peon3 = new m_peon(1, 2, 1, "PB");
 
-    tablero[peon1->getRow()][peon1->getCol()] = peon1;
-    tablero[peon2->getRow()][peon2->getCol()] = peon2;
     tablero[peon3->getRow()][peon3->getCol()] = peon3;
-    tablero[peon4->getRow()][peon4->getCol()] = peon4;
 }
 
 vector<vector<int>> getMove(string move) {  // combierte el movimiento de string a vector de posiciones
@@ -61,7 +55,7 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
     return mov;
 }
 
-bool m_tablero::mover(string move) { // funcion que permite mover las fichas segun un string
+bool m_tablero::comprobarMove(string move) {
     // passamos coordenadas de string a ints
     vector<vector<int>> mov = getMove(move);
     int orgX = mov[0][0];
@@ -75,16 +69,34 @@ bool m_tablero::mover(string move) { // funcion que permite mover las fichas seg
         cout << "No hay ninguna pieza en la casilla de origen" << endl;
         return false;
     }
-    
-    if (pieza->canMove(dstX, dstY)) {
-        pieza->setCol(dstY);
-        pieza->setRow(dstX);
-        tablero[dstX][dstY] = pieza;
-        tablero[orgX][orgY] = new m_pieza();
+
+    // si no hay piezas
+    // si tu rey esta en jaque
+
+    if (pieza->validMove(dstX, dstY)) {
+        return true;
     }
     else {
         cout << "Movimiento no valido" << endl;
+        return false;
     }
+}
+
+
+
+void m_tablero::mover(string move) { // funcion que permite mover las fichas segun un string
+    // passamos coordenadas de string a ints
+    vector<vector<int>> mov = getMove(move);
+    int orgX = mov[0][0];
+    int orgY = mov[0][1];
+    int dstX = mov[1][0];
+    int dstY = mov[1][1];
+
+    m_pieza* pieza = tablero[orgX][orgY];
+    pieza->setCol(dstY);
+    pieza->setRow(dstX);
+    tablero[dstX][dstY] = pieza;
+    tablero[orgX][orgY] = new m_pieza();
 }
 
 

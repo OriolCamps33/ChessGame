@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iomanip>
-#include "Model/m_tablero.h"
+#include "../Model/m_tablero.h"
 using namespace std;
 
 void m_tablero::printaTablero(){
@@ -21,6 +21,9 @@ void m_tablero::printaTablero(){
         }
     }
                
+    // limpiamos la pantalla antes de printar nada
+    system("cls");
+
 
     //printar tablero
     for(int i = int(numRow)-1; i >= 0; i--){

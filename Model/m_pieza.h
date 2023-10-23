@@ -43,7 +43,7 @@ class m_pieza
 
         void setMate(bool m) { isJaque = m; }
 
-        virtual bool canMove(int dstX, int dstY) { return true; }
+        virtual bool validMove(int dstX, int dstY) { return true; }
 };
 
 
@@ -54,6 +54,6 @@ class m_peon : public m_pieza{
         m_peon() { firstMove = true; }
         m_peon(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) { firstMove = true; }
         bool getFM() { return firstMove; }
-        bool canMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
+        bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
 };
 
