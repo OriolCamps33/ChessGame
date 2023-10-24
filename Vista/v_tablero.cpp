@@ -3,7 +3,7 @@
 #include "../Model/m_tablero.h"
 using namespace std;
 
-void m_tablero::printaTablero(){
+void m_tablero::printaTablero(bool clean){
     
     // creamos matriz
     string tablero2[numRow][numCol];
@@ -20,9 +20,9 @@ void m_tablero::printaTablero(){
             }
         }
     }
-               
-    // limpiamos la pantalla antes de printar nada
-    system("cls");
+    
+    if(clean) // limpiamos la pantalla antes de printar nada
+        system("cls");
 
 
     //printar tablero

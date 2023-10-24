@@ -14,11 +14,12 @@ private:
 
 public:
     m_tablero();
+    m_tablero(vector<m_pieza*> piezas);
     ~m_tablero() {};
 
     void mover(string move);
     bool comprobarMove(string move);
-    void printaTablero();
+    void printaTablero(bool clean);
 };
 
 

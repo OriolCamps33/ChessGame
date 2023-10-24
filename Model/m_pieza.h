@@ -52,8 +52,16 @@ class m_peon : public m_pieza{
         bool firstMove;
     public:
         m_peon() { firstMove = true; }
-        m_peon(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) { firstMove = true; }
+        m_peon(int row, int col, int colr, string ico) : m_pieza(row, col, colr, ico) { firstMove = true; }
         bool getFM() { return firstMove; }
         bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
+};
+
+class m_torre : public m_pieza {
+private:
+public:
+    m_torre() {}
+    m_torre(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
+    bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
 };
 

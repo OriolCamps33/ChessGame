@@ -26,6 +26,30 @@ m_tablero::m_tablero(){
     tablero[peon3->getRow()][peon3->getCol()] = peon3;
 }
 
+
+m_tablero::m_tablero(vector<m_pieza*> piezas)
+{
+
+    // Creamos el espacio necessario para el tablero
+    tablero = new m_pieza * *[numRow];
+
+    for (int i = 0; i < numRow; i++) {
+        tablero[i] = new m_pieza * [numCol];
+    }
+
+    for (int i = 0; i < numRow; i++)
+    {
+        for (int j = 0; j < numCol; j++) {
+            tablero[i][j] = new m_pieza;
+        }
+    }
+
+    for (int i = 0; i < piezas.size(); i++) {
+        m_pieza* p = piezas[i];
+        tablero[p->getRow()][p->getCol()] = p;
+    }
+}
+
 vector<vector<int>> getMove(string move) {  // combierte el movimiento de string a vector de posiciones
     // Parametros para passar de str a int
     int letras = 97;
