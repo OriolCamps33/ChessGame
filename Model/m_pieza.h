@@ -30,6 +30,7 @@ class m_pieza
         string getIcono() { return icono; }
 
         bool getMate() { return isJaque; }
+
         //setters
         void setColor(int Color) { color = Color; }
 
@@ -63,5 +64,22 @@ public:
     m_torre() {}
     m_torre(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
     bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
+};
+
+class m_alfil : public m_pieza {
+private:
+public:
+    m_alfil() {}
+    m_alfil(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
+    bool validMove(int dstX, int dstY) override;
+};
+
+
+class m_caballo : public m_pieza {
+private:
+public:
+    m_caballo() {}
+    m_caballo(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
+    bool validMove(int dstX, int dstY) override;
 };
 
