@@ -21,9 +21,72 @@ m_tablero::m_tablero(){
     }
 
     // inicializamos todas las piezas
-    m_peon* peon3 = new m_peon(1, 2, 1, "PB");
 
+    //BLANCAS
+    m_peon* peon1 = new m_peon(1, 1, 1, "PB");
+    m_peon* peon2 = new m_peon(1, 2, 1, "PB");
+    m_peon* peon3 = new m_peon(1, 3, 1, "PB");
+    m_peon* peon4 = new m_peon(1, 4, 1, "PB");
+    m_peon* peon5 = new m_peon(1, 5, 1, "PB");
+    m_peon* peon6 = new m_peon(1, 6, 1, "PB");
+
+    m_torre* torre1 = new m_torre(0, 0, 1, "TB");
+    m_torre* torre2 = new m_torre(0, 7, 1, "TB");
+
+    m_alfil* alfil1 = new m_alfil(0, 2, 1, "AB");
+    m_alfil* alfil2 = new m_alfil(0, 5, 1, "AB");
+
+    m_caballo* caballo1 = new m_caballo(0, 1, 1, "CB");
+    m_caballo* caballo2 = new m_caballo(0, 6, 1, "CB");
+
+    tablero[peon1->getRow()][peon1->getCol()] = peon1;
+    tablero[peon2->getRow()][peon2->getCol()] = peon2;
     tablero[peon3->getRow()][peon3->getCol()] = peon3;
+    tablero[peon4->getRow()][peon4->getCol()] = peon4;
+    tablero[peon5->getRow()][peon5->getCol()] = peon5;
+    tablero[peon6->getRow()][peon6->getCol()] = peon6;
+
+    tablero[torre1->getRow()][torre1->getCol()] = torre1;
+    tablero[torre2->getRow()][torre2->getCol()] = torre2;
+
+    tablero[alfil1->getRow()][alfil1->getCol()] = alfil1;
+    tablero[alfil2->getRow()][alfil2->getCol()] = alfil2;
+
+    tablero[caballo1->getRow()][caballo1->getCol()] = caballo1;
+    tablero[caballo2->getRow()][caballo2->getCol()] = caballo2;
+
+    //NEGRAS
+    m_peon* peon9 = new m_peon(6, 1, 2, "PN");
+    m_peon* peon10 = new m_peon(6, 2, 2, "PN");
+    m_peon* peon11 = new m_peon(6, 3, 2, "PN");
+    m_peon* peon12 = new m_peon(6, 4, 2, "PN");
+    m_peon* peon13 = new m_peon(6, 5, 2, "PN");
+    m_peon* peon14 = new m_peon(6, 6, 2, "PN");
+
+    m_torre* torre3 = new m_torre(7, 0, 2, "TN");
+    m_torre* torre4 = new m_torre(7, 7, 2, "TN");
+
+    m_alfil* alfil3 = new m_alfil(7, 2, 2, "AN");
+    m_alfil* alfil4 = new m_alfil(7, 5, 2, "AN");
+
+    m_caballo* caballo3 = new m_caballo(7, 1, 2, "CN");
+    m_caballo* caballo4 = new m_caballo(7, 6, 2, "CN");
+
+    tablero[peon9->getRow()][peon9->getCol()] = peon9;
+    tablero[peon10->getRow()][peon10->getCol()] = peon10;
+    tablero[peon11->getRow()][peon11->getCol()] = peon11;
+    tablero[peon12->getRow()][peon12->getCol()] = peon12;
+    tablero[peon13->getRow()][peon13->getCol()] = peon13;
+    tablero[peon14->getRow()][peon14->getCol()] = peon14;
+
+    tablero[torre3->getRow()][torre3->getCol()] = torre3;
+    tablero[torre4->getRow()][torre4->getCol()] = torre4;
+
+    tablero[alfil3->getRow()][alfil3->getCol()] = alfil3;
+    tablero[alfil4->getRow()][alfil4->getCol()] = alfil4;
+
+    tablero[caballo3->getRow()][caballo3->getCol()] = caballo3;
+    tablero[caballo4->getRow()][caballo4->getCol()] = caballo4;
 }
 
 
@@ -79,7 +142,7 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
     return mov;
 }
 
-bool m_tablero::comprobarMove(string move) {
+bool m_tablero::comprobarMove(string move, int jugador) {
     // passamos coordenadas de string a ints
     vector<vector<int>> mov = getMove(move);
     int orgX = mov[0][0];
@@ -89,8 +152,22 @@ bool m_tablero::comprobarMove(string move) {
 
     m_pieza* pieza = tablero[orgX][orgY];
 
+    //casilla seleccionada no hay nada
     if (pieza->getIcono() == "-1") {
-        cout << "No hay ninguna pieza en la casilla de origen" << endl;
+        cout << "Movimiento invalido, no hay ninguna pieza en la casilla de origen" << endl;
+        return false;
+    }
+
+    //casilla destino ocupada por ficha aliada
+    if (tablero[dstX][dstY]->getIcono() != "-1" && tablero[dstX][dstY]->getColor() == tablero[orgX][orgY]->getColor())
+    {
+        cout << "Movimiento invalido, casilla ocupada por ficha aliada" << endl;
+        return false;
+    }
+
+    //jugador moviendo ficha del enemigo
+    if (tablero[orgX][orgY]->getColor() != jugador) {
+        cout << "Movimiento invalido, ficha del oponente seleccionada" << endl;
         return false;
     }
 
@@ -101,7 +178,7 @@ bool m_tablero::comprobarMove(string move) {
         return true;
     }
     else {
-        cout << "Movimiento no valido" << endl;
+        cout << "Movimiento de la ficha invalido" << endl;
         return false;
     }
 }
