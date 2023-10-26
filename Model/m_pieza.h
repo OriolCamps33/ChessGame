@@ -31,6 +31,8 @@ class m_pieza
 
         bool getMate() { return isJaque; }
 
+        virtual bool getFM() { return false; }
+
         //setters
         void setColor(int Color) { color = Color; }
 
@@ -44,7 +46,14 @@ class m_pieza
 
         void setMate(bool m) { isJaque = m; }
 
+        virtual void setFM(bool fm) {}
+
         virtual bool validMove(int dstX, int dstY) { return true; }
+
+
+        virtual bool isPeon() { return false; }
+        virtual bool isTorre() { return false; }
+        virtual bool isAlfil() { return false; }
 };
 
 
@@ -54,8 +63,10 @@ class m_peon : public m_pieza{
     public:
         m_peon() { firstMove = true; }
         m_peon(int row, int col, int colr, string ico) : m_pieza(row, col, colr, ico) { firstMove = true; }
-        bool getFM() { return firstMove; }
+        bool getFM() override { return firstMove; }
+        void setFM(bool fm) override { firstMove = fm; }
         bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
+        bool isPeon() override { return true; }
 };
 
 class m_torre : public m_pieza {
@@ -64,6 +75,7 @@ public:
     m_torre() {}
     m_torre(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
     bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
+    bool isTorre() override { return true; }
 };
 
 class m_alfil : public m_pieza {
@@ -72,6 +84,7 @@ public:
     m_alfil() {}
     m_alfil(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
     bool validMove(int dstX, int dstY) override;
+    bool isAlfil() override { return true; }
 };
 
 

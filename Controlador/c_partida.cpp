@@ -13,11 +13,9 @@ void m_partida::Jugar() {
 	m_tablero tablero = m_tablero(); //crear tablero + añadir fichas
 
 	while (winner == false) {
-
-		cout << endl << "Turno del jugador: " << jugador << endl;
-
 		tablero.printaTablero(false);
 
+		cout << endl << "Turno del jugador: " << jugador << endl;
 		// input movimiento
 		string m1;
 		string m2;

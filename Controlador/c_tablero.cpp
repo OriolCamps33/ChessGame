@@ -171,8 +171,40 @@ bool m_tablero::comprobarMove(string move, int jugador) {
         return false;
     }
 
-    // si no hay piezas
     // si tu rey esta en jaque
+
+    // si hay piezas por medio
+    if (tablero[orgX][orgY]->isTorre()) {
+        // Comprovacion para la torre
+        for (int i = min(orgX, dstX)+1; i <= max(orgX, dstX); i++) {
+            for (int j = min(orgY, dstY)+1; j <= min(orgY, dstY); j++) {
+                if (tablero[i][j]->getIcono() != "-1") {
+                    cout << "Movimiento invalido, Ficha en mitad del camino" << endl;
+                    return false;
+                }
+            }
+        }
+    }
+    else if (tablero[orgX][orgY]->isAlfil()) {
+        // comprobacion para el alfil
+        int sumX = 1;
+        int sumY = 1;
+        if (min(orgX, dstX) == dstX)
+            sumX = -1;
+        else if (min(orgY, dstY) == dstY)
+            sumY = -1;
+        int i = orgX + sumX;
+        int j = orgY + sumY;
+        while (i != dstX && j != dstY)
+        {
+            if (tablero[i][j]->getIcono() != "-1") {
+                cout << "Movimiento invalido, Ficha en mitad del camino" << endl;
+                return false;
+            }
+            i += sumX;
+            j += sumY;
+        }
+    }
 
     if (pieza->validMove(dstX, dstY)) {
         return true;
@@ -194,6 +226,10 @@ void m_tablero::mover(string move) { // funcion que permite mover las fichas seg
     int dstY = mov[1][1];
 
     m_pieza* pieza = tablero[orgX][orgY];
+
+    if (pieza->isPeon() && pieza->getFM())
+        pieza->setFM(false);
+    
     pieza->setCol(dstY);
     pieza->setRow(dstX);
     tablero[dstX][dstY] = pieza;
