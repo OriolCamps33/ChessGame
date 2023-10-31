@@ -9,11 +9,14 @@ public:
 	m_partida(){};
 	~m_partida(){};
 
+	bool getJaque() { return isJaque; }
+	void setJaque(bool j) { isJaque = j; }
+
 	void Jugar();
 	
 
 private:
 	m_tablero tablero;
-	
+	bool isJaque;
 };
 

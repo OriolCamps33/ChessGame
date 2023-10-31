@@ -39,6 +39,9 @@ m_tablero::m_tablero(){
     m_caballo* caballo1 = new m_caballo(0, 1, 1, "CB");
     m_caballo* caballo2 = new m_caballo(0, 6, 1, "CB");
 
+    m_rey* rey1 = new m_rey(0, 4, 1, "RB");
+    reyBlanco = rey1;
+
     tablero[peon1->getRow()][peon1->getCol()] = peon1;
     tablero[peon2->getRow()][peon2->getCol()] = peon2;
     tablero[peon3->getRow()][peon3->getCol()] = peon3;
@@ -54,6 +57,8 @@ m_tablero::m_tablero(){
 
     tablero[caballo1->getRow()][caballo1->getCol()] = caballo1;
     tablero[caballo2->getRow()][caballo2->getCol()] = caballo2;
+
+    tablero[rey1->getRow()][rey1->getCol()] = rey1;
 
     //NEGRAS
     m_peon* peon9 = new m_peon(6, 1, 2, "PN");
@@ -72,6 +77,9 @@ m_tablero::m_tablero(){
     m_caballo* caballo3 = new m_caballo(7, 1, 2, "CN");
     m_caballo* caballo4 = new m_caballo(7, 6, 2, "CN");
 
+    m_rey* rey2 = new m_rey(7, 4, 1, "RN");
+    reyNegro = rey2;
+
     tablero[peon9->getRow()][peon9->getCol()] = peon9;
     tablero[peon10->getRow()][peon10->getCol()] = peon10;
     tablero[peon11->getRow()][peon11->getCol()] = peon11;
@@ -87,6 +95,8 @@ m_tablero::m_tablero(){
 
     tablero[caballo3->getRow()][caballo3->getCol()] = caballo3;
     tablero[caballo4->getRow()][caballo4->getCol()] = caballo4;
+
+    tablero[rey2->getRow()][rey2->getCol()] = rey2;
 }
 
 
@@ -109,6 +119,11 @@ m_tablero::m_tablero(vector<m_pieza*> piezas)
 
     for (int i = 0; i < piezas.size(); i++) {
         m_pieza* p = piezas[i];
+        if (p->isRey()) {
+            if (p->getColor() == 1) {
+                reyBlanco = p;
+            }
+        }
         tablero[p->getRow()][p->getCol()] = p;
     }
 }
@@ -237,3 +252,119 @@ void m_tablero::mover(string move) { // funcion que permite mover las fichas seg
 }
 
 
+bool m_tablero::isJaque(int player) {
+    m_rey* rey;
+    if (player == 1) {
+        rey = reyNegro;
+    }
+    else {
+        rey = reyNegro;
+    }
+
+    // comprobar vertical
+    for (int i = 0; i < numRow; i++) {
+        m_pieza* p = tablero[i][rey->getCol()];
+        if (p->getIcono() != "-1") {
+            if (p->isTorre() && p->getColor() != player) {
+                return true;
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    // comprobar horizontal
+    for (int i = 0; i < numCol; i++) {
+        m_pieza* p = tablero[rey->getRow()][i];
+        if (p->getIcono() != "-1") {
+            if (p->isTorre() && p->getColor() != player) {
+                return true;
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    // comporbar diagonal 1
+    int p = rey->getRow() - rey->getCol();
+    if (p < 0) {
+        int iniCol = abs(p);
+        for (int i = iniCol; i < numCol; i++) {
+            m_pieza* p = tablero[i - iniCol][i];
+            if (p->getIcono() != "-1") {
+                if (p->getColor() != player && p->isAlfil()) {
+                    return false;
+                }
+                else if (p->getColor() != player && p->isPeon()) {
+                    if (i - rey->getCol() == 1)
+                        return false;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        int iniRow = p;
+        for (int i = iniRow; i < numRow; i++) {
+            m_pieza* p = tablero[i][i - iniRow];
+            if (p->getIcono() != "-1") {
+                if (p->getColor() != player && p->isAlfil()) {
+                    return false;
+                }
+                else if (p->getColor() != player && p->isPeon()) {
+                    if (i - rey->getCol() == 1)
+                        return false;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+    
+
+    // comprobar diagonal 2
+    int p = rey->getRow() - rey->getCol();
+    if (p < 0) {
+        int iniCol = abs(p);
+        for (int i = iniCol; i < numCol; i++) {
+            m_pieza* p = tablero[i - iniCol][i];
+            if (p->getIcono() != "-1") {
+                if (p->getColor() != player && p->isAlfil()) {
+                    return false;
+                }
+                else if (p->getColor() != player && p->isPeon()) {
+                    if (i - rey->getCol() == 1)
+                        return false;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        int iniRow = p;
+        for (int i = iniRow; i < numRow; i++) {
+            m_pieza* p = tablero[i][i - iniRow];
+            if (p->getIcono() != "-1") {
+                if (p->getColor() != player && p->isAlfil()) {
+                    return false;
+                }
+                else if (p->getColor() != player && p->isPeon()) {
+                    if (i - rey->getCol() == 1)
+                        return false;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+
+    // comprobar caballos
+}

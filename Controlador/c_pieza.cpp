@@ -98,3 +98,21 @@ bool m_caballo::validMove(int dstX, int dstY)
     else
         return false;
 }
+
+
+// REY
+bool m_rey::validMove(int dstX, int dstY)
+{
+    // posiciones dentro del tablero
+    assert(dstX < numRow && dstX >= 0);
+    assert(dstY < numCol && dstY >= 0);
+
+    int actRow = getRow();
+    int actCol = getCol();
+
+    //si se cumple esto esta haciendo diagonal, se ve con un dibujito :)
+    if (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1) 
+        return true;
+    else
+        return false;
+}

@@ -20,31 +20,28 @@ void m_partida::Jugar() {
 		string m1;
 		string m2;
 
+		string move;
+
 		while (movValido == false) //bucle para que pida movimientos hasta hacer uno valido
 		{
 			cin >> m1 >> m2;
-			string move = m1 + " " + m2;
+			move = m1 + " " + m2;
 
-			movValido = tablero.comprobarMove(move, jugador); //comprovamos si el movimiento es valido
-
-			if(movValido == true)
-				tablero.mover(move); //movemos
+			movValido = tablero.comprobarMove(move, jugador); //comprovamos si el movimiento es valido				
 		}
 
-		// jugador mueve
-			//comprueba movimiento
-			//mueve fichas
-			//comprueba jaque
+		tablero.mover(move); //movemos
+
+		if (tablero.isJaque(jugador)) {
+			isJaque = true;
+		}
 
 		//si no puede mover: fin
 
 		//actualizar tablero
-
+		 
 		//cambiar jugador
-		if (jugador == 1)
-			jugador = 2;
-		else
-			jugador = 1;
+		jugador = (jugador % 2) + 1;
 
 		movValido = false;
 	}

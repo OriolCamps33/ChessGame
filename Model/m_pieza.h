@@ -54,6 +54,9 @@ class m_pieza
         virtual bool isPeon() { return false; }
         virtual bool isTorre() { return false; }
         virtual bool isAlfil() { return false; }
+        virtual bool isCaballo() { return false; }
+        virtual bool isRey() { return false; }
+
 };
 
 
@@ -94,5 +97,15 @@ public:
     m_caballo() {}
     m_caballo(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
     bool validMove(int dstX, int dstY) override;
+    bool isCaballo() override { return true; }
 };
 
+
+class m_rey : public m_pieza {
+private:
+public:
+    m_rey() {}
+    m_rey(int x, int y, int col, string ico) : m_pieza(x, y, col, ico) {}
+    bool validMove(int dstX, int dstY) override;
+    bool isRey() override { return true; }
+};

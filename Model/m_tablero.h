@@ -11,7 +11,8 @@ class m_tablero
 {
 private:
     m_pieza*** tablero;
-
+    m_pieza* reyBlanco;
+    m_pieza* reyNegro;
 public:
     m_tablero();
     m_tablero(vector<m_pieza*> piezas);
@@ -19,6 +20,7 @@ public:
 
     void mover(string move);
     bool comprobarMove(string move, int jugador);
+    bool isJaque(int player);
     void printaTablero(bool clean);
 };
 
