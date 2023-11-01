@@ -13,7 +13,7 @@ int main(int argc, char const* argv[])
 
 	m_partida partida = m_partida();
 
-	// partida.Jugar();
+	partida.Jugar();
 
 	bool winner = false;
 
