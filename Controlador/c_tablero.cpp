@@ -186,46 +186,21 @@ bool m_tablero::comprobarMove(string move, int jugador) {
         return false;
     }
 
-    // si tu rey esta en jaque
-
-    // si hay piezas por medio
-    if (tablero[orgX][orgY]->isTorre()) {
-        // Comprovacion para la torre
-        for (int i = min(orgX, dstX)+1; i <= max(orgX, dstX); i++) {
-            for (int j = min(orgY, dstY)+1; j <= min(orgY, dstY); j++) {
-                if (tablero[i][j]->getIcono() != "-1") {
-                    cout << "Movimiento invalido, Ficha en mitad del camino" << endl;
-                    return false;
-                }
-            }
-        }
-    }
-    else if (tablero[orgX][orgY]->isAlfil()) {
-        // comprobacion para el alfil
-        int sumX = 1;
-        int sumY = 1;
-        if (min(orgX, dstX) == dstX)
-            sumX = -1;
-        else if (min(orgY, dstY) == dstY)
-            sumY = -1;
-        int i = orgX + sumX;
-        int j = orgY + sumY;
-        while (i != dstX && j != dstY)
-        {
-            if (tablero[i][j]->getIcono() != "-1") {
-                cout << "Movimiento invalido, Ficha en mitad del camino" << endl;
-                return false;
-            }
-            i += sumX;
-            j += sumY;
-        }
-    }
-
-    if (pieza->validMove(dstX, dstY)) {
-        return true;
-    }
-    else {
+    // si no hay piezas
+    if (!pieza->validMove(dstX, dstY)) {
         cout << "Movimiento de la ficha invalido" << endl;
+        return false;
+    }
+
+    //cosas especiales de peon
+    if (pieza->isPeon())
+    {
+
+    }
+
+    //mi movimiento no ha generado jaque contra mi
+    if (isJaque(jugador, orgX, orgY, dstX, dstY)) {
+        cout << "Movimiento incorrecto, estas en jaque" << endl;
         return false;
     }
 }
@@ -241,10 +216,6 @@ void m_tablero::mover(string move) { // funcion que permite mover las fichas seg
     int dstY = mov[1][1];
 
     m_pieza* pieza = tablero[orgX][orgY];
-
-    if (pieza->isPeon() && pieza->getFM())
-        pieza->setFM(false);
-    
     pieza->setCol(dstY);
     pieza->setRow(dstX);
     tablero[dstX][dstY] = pieza;
@@ -252,119 +223,290 @@ void m_tablero::mover(string move) { // funcion que permite mover las fichas seg
 }
 
 
-bool m_tablero::isJaque(int player) {
-    m_rey* rey;
+bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
+
+    int i;
+    int j;
+    bool inJaque = false;
+
+    m_pieza* rey;
     if (player == 1) {
-        rey = reyNegro;
+        rey = reyBlanco;
     }
     else {
         rey = reyNegro;
     }
 
-    // comprobar vertical
-    for (int i = 0; i < numRow; i++) {
+    //simulamos movimiento
+    m_pieza* copiaSeguridadOrg = tablero[orgX][orgY];
+    m_pieza* copiaSeguridadDst = tablero[dstX][dstY];
+
+    m_pieza* pieza = tablero[orgX][orgY];
+    pieza->setCol(dstY);
+    pieza->setRow(dstX);
+    tablero[dstX][dstY] = pieza;
+    tablero[orgX][orgY] = new m_pieza();
+    
+
+
+    //jaque por torre
+    //comprobar vertical
+    for (int i = rey->getRow() + 1; i < numRow; i++) {
         m_pieza* p = tablero[i][rey->getCol()];
-        if (p->getIcono() != "-1") {
-            if (p->isTorre() && p->getColor() != player) {
-                return true;
+        if (p->getIcono() != "-1") { //miramos si hay una ficha
+
+            if (p->getColor() != rey->getColor() && p->isTorre() == true) {
+                inJaque = true;
+                goto deshacerMove;
             }
-            else {
+            else
                 break;
+        }
+    }
+
+    for (int i = rey->getRow() - 1; i > 0; i--) {
+        m_pieza* p = tablero[i][rey->getCol()];
+        if (p->getIcono() != "-1") { //miramos si hay una ficha
+
+            if (p->getColor() != rey->getColor() && p->isTorre()) {
+                inJaque = true;
+                goto deshacerMove;
             }
+            else
+                break;
         }
     }
 
     // comprobar horizontal
-    for (int i = 0; i < numCol; i++) {
+    for (int i = rey->getCol() + 1; i < numCol; i++) {
         m_pieza* p = tablero[rey->getRow()][i];
-        if (p->getIcono() != "-1") {
-            if (p->isTorre() && p->getColor() != player) {
-                return true;
+        if (p->getIcono() != "-1") { //miramos si hay una ficha
+
+            if (p->getColor() != rey->getColor() && p->isTorre() == true) {
+                inJaque = true;
+                goto deshacerMove;
             }
-            else {
+            else
                 break;
-            }
         }
     }
 
-    // comporbar diagonal 1
-    int p = rey->getRow() - rey->getCol();
-    if (p < 0) {
-        int iniCol = abs(p);
-        for (int i = iniCol; i < numCol; i++) {
-            m_pieza* p = tablero[i - iniCol][i];
-            if (p->getIcono() != "-1") {
-                if (p->getColor() != player && p->isAlfil()) {
-                    return false;
-                }
-                else if (p->getColor() != player && p->isPeon()) {
-                    if (i - rey->getCol() == 1)
-                        return false;
-                }
-                else {
-                    break;
-                }
+    for (int i = rey->getCol() - 1; i > 0; i--) {
+        m_pieza* p = tablero[rey->getRow()][i];
+        if (p->getIcono() != "-1") { //miramos si hay una ficha
+
+            if (p->getColor() != rey->getColor() && p->isTorre()) 
+            {
+                inJaque = true;
+                goto deshacerMove;
             }
+            else
+                break;
         }
     }
-    else {
-        int iniRow = p;
-        for (int i = iniRow; i < numRow; i++) {
-            m_pieza* p = tablero[i][i - iniRow];
-            if (p->getIcono() != "-1") {
-                if (p->getColor() != player && p->isAlfil()) {
-                    return false;
-                }
-                else if (p->getColor() != player && p->isPeon()) {
-                    if (i - rey->getCol() == 1)
-                        return false;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    }
+
+    //jaque por alfil
     
+    // diagonal superior derecha
+    i = rey->getRow() + 1;
+    j = rey->getCol() + 1;
+    while (i < numRow && j < numCol) {
+        m_pieza* p = tablero[i][j];
 
-    // comprobar diagonal 2
-    int p = rey->getRow() - rey->getCol();
-    if (p < 0) {
-        int iniCol = abs(p);
-        for (int i = iniCol; i < numCol; i++) {
-            m_pieza* p = tablero[i - iniCol][i];
-            if (p->getIcono() != "-1") {
-                if (p->getColor() != player && p->isAlfil()) {
-                    return false;
-                }
-                else if (p->getColor() != player && p->isPeon()) {
-                    if (i - rey->getCol() == 1)
-                        return false;
-                }
-                else {
-                    break;
-                }
+        if (p->getIcono() != "-1") {
+
+            if (p->getColor() != rey->getColor() && p->isAlfil())
+            {
+                inJaque = true;
+                goto deshacerMove;
             }
+            else
+                break;
         }
+
+        i++;
+        j++;
     }
-    else {
-        int iniRow = p;
-        for (int i = iniRow; i < numRow; i++) {
-            m_pieza* p = tablero[i][i - iniRow];
-            if (p->getIcono() != "-1") {
-                if (p->getColor() != player && p->isAlfil()) {
-                    return false;
-                }
-                else if (p->getColor() != player && p->isPeon()) {
-                    if (i - rey->getCol() == 1)
-                        return false;
-                }
-                else {
-                    break;
-                }
+
+    //diagonal superior izquierda
+    i = rey->getRow() + 1;
+    j = rey->getCol() - 1;
+    while (i < numRow && j > 0) {
+        m_pieza* p = tablero[i][j];
+
+        if (p->getIcono() != "-1") {
+
+            if (p->getColor() != rey->getColor() && p->isAlfil())
+            {
+                inJaque = true;
+                goto deshacerMove;
             }
+            else
+                break;
         }
+
+        i++;
+        j--;
+    }
+
+    //diagonal inferior derecha
+    i = rey->getRow() - 1;
+    j = rey->getCol() + 1;
+    while (i > 0 && j < numCol) {
+        m_pieza* p = tablero[i][j];
+
+        if (p->getIcono() != "-1") {
+
+            if (p->getColor() != rey->getColor() && p->isAlfil())
+            {
+                inJaque = true;
+                goto deshacerMove;
+            }
+            else
+                break;
+        }
+
+        i--;
+        j++;
+    }
+
+    //diagonal inferior izquierda
+    i = rey->getRow() - 1;
+    j = rey->getCol() - 1;
+    while (i > 0 && j > 0) {
+        m_pieza* p = tablero[i][j];
+
+        if (p->getIcono() != "-1") {
+
+            if (p->getColor() != rey->getColor() && p->isAlfil())
+            {
+                inJaque = true;
+                goto deshacerMove;
+            }
+            else
+                break;
+        }
+
+        i--;
+        j--;
     }
 
     // comprobar caballos
+    i = rey->getRow();
+    j = rey->getCol();
+
+    // +2 +1
+    if (i + 2 < numRow && j + 1 < numCol)
+    {
+        if (tablero[i + 2][j + 1]->getIcono() != "-1" &&
+            tablero[i + 2][j + 1]->isCaballo() &&
+            tablero[i + 2][j + 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //+1 +2
+    if (i + 1 < numRow && j + 2 < numCol)
+    {
+        if (tablero[i + 1][j + 2]->getIcono() != "-1" &&
+            tablero[i + 1][j + 2]->isCaballo() &&
+            tablero[i + 1][j + 2]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //-1 +2
+    if (i - 1 > 0 && j + 2 < numCol)
+    {
+        if (tablero[i - 1][j + 2]->getIcono() != "-1" &&
+            tablero[i - 1][j + 2]->isCaballo() &&
+            tablero[i - 1][j + 2]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //-2 +1
+    if (i - 2 > 0 && j + 1 < numCol)
+    {
+        if (tablero[i - 2][j + 1]->getIcono() != "-1" &&
+            tablero[i - 2][j + 1]->isCaballo() &&
+            tablero[i - 2][j + 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //-2 -1
+    if (i - 2 > 0 && j - 1 > 0)
+    {
+        if (tablero[i - 2][j - 1]->getIcono() != "-1" &&
+            tablero[i - 2][j - 1]->isCaballo() &&
+            tablero[i - 2][j - 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //-1 -2
+    if (i - 1 > 0 && j - 2 > 0)
+    {
+        if (tablero[i - 1][j - 2]->getIcono() != "-1" &&
+            tablero[i - 1][j - 2]->isCaballo() &&
+            tablero[i - 1][j - 2]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //+1 -2
+    if (i + 1 < numRow && j - 2 < numCol)
+    {
+        if (tablero[i + 1][j - 2]->getIcono() != "-1" &&
+            tablero[i + 1][j - 2]->isCaballo() &&
+            tablero[i + 1][j - 2]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+    //+2 -1
+    if (i + 2 < numRow && j - 1 < numCol)
+    {
+        if (tablero[i + 2][j - 1]->getIcono() != "-1" &&
+            tablero[i + 2][j - 1]->isCaballo() &&
+            tablero[i + 2][j - 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+
+
+    //jaque por peon
+
+
+    //deshacer movimiento
+deshacerMove:
+
+    copiaSeguridadOrg->setCol(orgY);
+    copiaSeguridadOrg->setRow(orgX);
+
+    tablero[orgX][orgY] = copiaSeguridadOrg;
+
+    tablero[dstX][dstY] = copiaSeguridadDst;
+
+    if (inJaque == true)
+        return true;
+    else
+        return false;
 }

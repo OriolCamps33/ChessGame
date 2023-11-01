@@ -16,27 +16,22 @@ bool m_peon::validMove(int dstX, int dstY)
     int actRow = getRow();
     int actCol = getCol();
 
-    // no hay cambio de columna
-    assert(actCol == dstY);
-
+    
     if (getColor() == 1) {
-        if (actRow < dstX) {
-            if((actRow + 1) == dstX)
-                return true;
-            else if ((actRow+ 2) == dstX && firstMove)
-                return true;        
-        }
-        return false;
+        //movimiento recto + movimiento doble inicial + diagonal (para matar)
+        if (dstX - actRow == 1 && ( dstY == actCol || abs(dstY - actCol) == 1))
+            return true;
+        else if (dstX - actRow == 2 && actRow == 1 )
+            return true;
     }
     else {
-        if (actRow > dstX) {
-            if ((actRow - 1) == dstX)
-                return true;
-            else if ((actRow - 2) == dstX && firstMove)
-                return true;
-        }
-        return false;
+        if (dstX - actRow == -1 && (dstY == actCol || abs(dstY - actCol) == 1))
+            return true;
+        else if (dstX - actRow == 2 && actRow == numRow - 1)
+            return true;
     }
+
+    return false;
 }
 
 
@@ -100,18 +95,17 @@ bool m_caballo::validMove(int dstX, int dstY)
 }
 
 
-// REY
 bool m_rey::validMove(int dstX, int dstY)
 {
     // posiciones dentro del tablero
-    assert(dstX < numRow && dstX >= 0);
-    assert(dstY < numCol && dstY >= 0);
+    assert(dstX < numRow&& dstX >= 0);
+    assert(dstY < numCol&& dstY >= 0);
 
     int actRow = getRow();
     int actCol = getCol();
 
     //si se cumple esto esta haciendo diagonal, se ve con un dibujito :)
-    if (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1) 
+    if (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1)
         return true;
     else
         return false;

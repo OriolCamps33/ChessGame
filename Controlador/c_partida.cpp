@@ -32,14 +32,11 @@ void m_partida::Jugar() {
 
 		tablero.mover(move); //movemos
 
-		if (tablero.isJaque(jugador)) {
-			isJaque = true;
-		}
 
 		//si no puede mover: fin
 
 		//actualizar tablero
-		 
+
 		//cambiar jugador
 		jugador = (jugador % 2) + 1;
 
