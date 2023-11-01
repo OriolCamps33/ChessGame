@@ -6,17 +6,12 @@ using namespace std;
 class m_partida
 {
 public:
-	m_partida(){};
-	~m_partida(){};
-
-	bool getJaque() { return isJaque; }
-	void setJaque(bool j) { isJaque = j; }
+	m_partida() {};
+	~m_partida() {};
 
 	void Jugar();
-	
+
 
 private:
 	m_tablero tablero;
-	bool isJaque;
 };
-

@@ -165,7 +165,6 @@ void testCanMoveCaballo() {
 void testAll() {
     
     testCanMovePeon();
-
     testCanMoveTorre();
     testCanMoveAlfil();
     testCanMoveCaballo();

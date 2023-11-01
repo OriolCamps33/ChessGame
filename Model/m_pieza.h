@@ -5,71 +5,71 @@ using namespace std;
 
 class m_pieza
 {
-    private:
-        int col;
-        int row;
-        int color;
-        bool vivo;
-        bool isJaque;
-        string icono;
+private:
+    int col;
+    int row;
+    int color;
+    bool vivo;
+    bool isJaque;
+    string icono;
 
-    public:
-        m_pieza() { vivo = true; isJaque = false; row = -1; col = -1; color = -1; icono = "-1"; }
-        m_pieza(int pX, int pY, int colo, string ico) { row = pX, col = pY, color = colo, vivo = true, isJaque = false, icono = ico; }
-        ~m_pieza() {}
+public:
+    m_pieza() { vivo = true; isJaque = false; row = -1; col = -1; color = -1; icono = "-1"; }
+    m_pieza(int pX, int pY, int colo, string ico) { row = pX, col = pY, color = colo, vivo = true, isJaque = false, icono = ico; }
+    ~m_pieza() {}
 
-        //getters
-        int getColor() { return color; }
+    //getters
+    int getColor() { return color; }
 
-        bool getVivo() { return vivo; }
+    bool getVivo() { return vivo; }
 
-        int getRow() { return row; }
+    int getRow() { return row; }
 
-        int getCol() { return col; }
+    int getCol() { return col; }
 
-        string getIcono() { return icono; }
+    string getIcono() { return icono; }
 
-        bool getMate() { return isJaque; }
+    bool getMate() { return isJaque; }
 
-        virtual bool getFM() { return false; }
+    virtual bool getFM() { return false; }
 
-        //setters
-        void setColor(int Color) { color = Color; }
+    //setters
+    void setColor(int Color) { color = Color; }
 
-        void setVivo(bool Vivo) { vivo = Vivo; }
+    void setVivo(bool Vivo) { vivo = Vivo; }
 
-        void setRow(int pX) { row = pX; }
+    void setRow(int pX) { row = pX; }
 
-        void setCol(int pY) { col = pY; }
-        
-        void setIcono(string ic) { icono = ic;  }
+    void setCol(int pY) { col = pY; }
 
-        void setMate(bool m) { isJaque = m; }
+    void setIcono(string ic) { icono = ic; }
 
-        virtual void setFM(bool fm) {}
+    void setMate(bool m) { isJaque = m; }
 
-        virtual bool validMove(int dstX, int dstY) { return true; }
+    virtual void setFM(bool fm) {}
+
+    virtual bool validMove(int dstX, int dstY) { return true; }
 
 
-        virtual bool isPeon() { return false; }
-        virtual bool isTorre() { return false; }
-        virtual bool isAlfil() { return false; }
-        virtual bool isCaballo() { return false; }
-        virtual bool isRey() { return false; }
+    virtual bool isPeon() { return false; }
+    virtual bool isTorre() { return false; }
+    virtual bool isAlfil() { return false; }
+    virtual bool isCaballo() { return false; }
+    virtual bool isRey() { return false; }
 
 };
 
 
-class m_peon : public m_pieza{
-    private:
-        bool firstMove;
-    public:
-        m_peon() { firstMove = true; }
-        m_peon(int row, int col, int colr, string ico) : m_pieza(row, col, colr, ico) { firstMove = true; }
-        bool getFM() override { return firstMove; }
-        void setFM(bool fm) override { firstMove = fm; }
-        bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
-        bool isPeon() override { return true; }
+class m_peon : public m_pieza {
+private:
+    bool firstMove;
+public:
+    m_peon() { firstMove = true; }
+    m_peon(int row, int col, int colr, string ico) : m_pieza(row, col, colr, ico) { firstMove = true; }
+    bool getFM() override { return firstMove; }
+    void setFM(bool fm) override { firstMove = fm; }
+    bool validMove(int dstX, int dstY) override; // comprobar si el movimiento es valido
+    bool isPeon() override { return true; }
 };
 
 class m_torre : public m_pieza {

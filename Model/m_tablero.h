@@ -20,8 +20,6 @@ public:
 
     void mover(string move);
     bool comprobarMove(string move, int jugador);
-    bool isJaque(int player);
+    bool isJaque(int player, int orgX, int orgY, int dstX, int dstY);
     void printaTablero(bool clean);
 };
-
-
