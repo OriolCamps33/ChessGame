@@ -27,7 +27,7 @@ bool m_peon::validMove(int dstX, int dstY)
     else {
         if (dstX - actRow == -1 && (dstY == actCol || abs(dstY - actCol) == 1))
             return true;
-        else if (dstX - actRow == 2 && actRow == numRow - 1)
+        else if (dstX - actRow == -2 && actRow == numRow - 2)
             return true;
     }
 

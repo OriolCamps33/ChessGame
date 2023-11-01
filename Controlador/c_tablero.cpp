@@ -29,17 +29,18 @@ m_tablero::m_tablero(){
     m_peon* peon4 = new m_peon(1, 4, 1, "PB");
     m_peon* peon5 = new m_peon(1, 5, 1, "PB");
     m_peon* peon6 = new m_peon(1, 6, 1, "PB");
+    m_peon* peon16 = new m_peon(1, 0, 1, "PB");
 
     m_torre* torre1 = new m_torre(0, 0, 1, "TB");
-    m_torre* torre2 = new m_torre(0, 7, 1, "TB");
+    m_torre* torre2 = new m_torre(0, 6, 1, "TB");
 
     m_alfil* alfil1 = new m_alfil(0, 2, 1, "AB");
-    m_alfil* alfil2 = new m_alfil(0, 5, 1, "AB");
+    m_alfil* alfil2 = new m_alfil(0, 4, 1, "AB");
 
     m_caballo* caballo1 = new m_caballo(0, 1, 1, "CB");
-    m_caballo* caballo2 = new m_caballo(0, 6, 1, "CB");
+    m_caballo* caballo2 = new m_caballo(0, 5, 1, "CB");
 
-    m_rey* rey1 = new m_rey(0, 4, 1, "RB");
+    m_rey* rey1 = new m_rey(0, 3, 1, "RB");
     reyBlanco = rey1;
 
     tablero[peon1->getRow()][peon1->getCol()] = peon1;
@@ -48,6 +49,7 @@ m_tablero::m_tablero(){
     tablero[peon4->getRow()][peon4->getCol()] = peon4;
     tablero[peon5->getRow()][peon5->getCol()] = peon5;
     tablero[peon6->getRow()][peon6->getCol()] = peon6;
+    tablero[peon16->getRow()][peon16->getCol()] = peon16;
 
     tablero[torre1->getRow()][torre1->getCol()] = torre1;
     tablero[torre2->getRow()][torre2->getCol()] = torre2;
@@ -67,17 +69,18 @@ m_tablero::m_tablero(){
     m_peon* peon12 = new m_peon(6, 4, 2, "PN");
     m_peon* peon13 = new m_peon(6, 5, 2, "PN");
     m_peon* peon14 = new m_peon(6, 6, 2, "PN");
+    m_peon* peon15 = new m_peon(6, 0, 2, "PN");
 
     m_torre* torre3 = new m_torre(7, 0, 2, "TN");
-    m_torre* torre4 = new m_torre(7, 7, 2, "TN");
+    m_torre* torre4 = new m_torre(7, 6, 2, "TN");
 
     m_alfil* alfil3 = new m_alfil(7, 2, 2, "AN");
-    m_alfil* alfil4 = new m_alfil(7, 5, 2, "AN");
+    m_alfil* alfil4 = new m_alfil(7, 4, 2, "AN");
 
     m_caballo* caballo3 = new m_caballo(7, 1, 2, "CN");
-    m_caballo* caballo4 = new m_caballo(7, 6, 2, "CN");
+    m_caballo* caballo4 = new m_caballo(7, 5, 2, "CN");
 
-    m_rey* rey2 = new m_rey(7, 4, 1, "RN");
+    m_rey* rey2 = new m_rey(7, 3, 2, "RN");
     reyNegro = rey2;
 
     tablero[peon9->getRow()][peon9->getCol()] = peon9;
@@ -86,6 +89,7 @@ m_tablero::m_tablero(){
     tablero[peon12->getRow()][peon12->getCol()] = peon12;
     tablero[peon13->getRow()][peon13->getCol()] = peon13;
     tablero[peon14->getRow()][peon14->getCol()] = peon14;
+    tablero[peon15->getRow()][peon15->getCol()] = peon15;
 
     tablero[torre3->getRow()][torre3->getCol()] = torre3;
     tablero[torre4->getRow()][torre4->getCol()] = torre4;
@@ -195,7 +199,25 @@ bool m_tablero::comprobarMove(string move, int jugador) {
     //cosas especiales de peon
     if (pieza->isPeon())
     {
-
+        // comprobar que no hay piezas en el destino cuando se mueve en vertical
+        if (dstY == orgY && tablero[dstX][dstY]->getIcono() != "-1") {
+            cout << "Movimiento de la ficha invalido" << endl;
+            return false;
+        } // lo mismo pero cuando se mueve 2
+        else if (dstY == orgY && abs(dstX - orgX) == 2) {
+            if (pieza->getColor() == 1 && tablero[dstX - 1 ][dstY]->getIcono() != "-1") {
+                cout << "Movimiento de la ficha invalido" << endl;
+                return false;
+            }
+            else if (pieza->getColor() == 2 && tablero[dstX + 1][dstY]->getIcono() != "-1") {
+                cout << "Movimiento de la ficha invalido" << endl;
+                return false;
+            }
+        } // Comprobar que solo se mueve en diagonal para matar una ficha
+        else if (dstY != orgY && tablero[dstX][dstY]->getIcono() == "-1") {
+            cout << "Movimiento de la ficha invalido" << endl;
+            return false;
+        }
     }
 
     //mi movimiento no ha generado jaque contra mi

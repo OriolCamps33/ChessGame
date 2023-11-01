@@ -1,9 +1,11 @@
 #include <iostream>
+#include <windows.h>
 #include <iomanip>
 #include "../Model/m_tablero.h"
 using namespace std;
 
 void m_tablero::printaTablero(bool clean){
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     
     // creamos matriz
     string tablero2[numRow][numCol];
@@ -23,6 +25,7 @@ void m_tablero::printaTablero(bool clean){
     
     if(clean) // limpiamos la pantalla antes de printar nada
         system("cls");
+//  149 blanco, 128 negro
 
 
     //printar tablero
@@ -39,7 +42,16 @@ void m_tablero::printaTablero(bool clean){
         cout << setfill(' ') << setw(2) << left << i+1;
         for(int j = 0; j<numCol; j++){
             cout << setfill(' ') << setw(2) << left << '|';
+            if (tablero[i][j]->getColor() == 1) {
+                // set del color blanco
+                SetConsoleTextAttribute(hConsole, 2);
+            }
+            else {
+                // set del color negro
+                SetConsoleTextAttribute(hConsole,9);
+            }
             cout << setfill(' ') << setw(3) << left << tablero2[i][j];
+            SetConsoleTextAttribute(hConsole, 7);
         }
         cout << '|';
     }
