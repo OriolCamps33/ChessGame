@@ -105,7 +105,7 @@ bool m_rey::validMove(int dstX, int dstY)
     int actCol = getCol();
 
     //si se cumple esto esta haciendo diagonal, se ve con un dibujito :)
-    if (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1)
+    if (abs(actRow - dstX) <= 1 && abs(actCol - dstY) <= 1)
         return true;
     else
         return false;

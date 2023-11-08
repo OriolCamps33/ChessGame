@@ -219,6 +219,44 @@ bool m_tablero::comprobarMove(string move, int jugador) {
             return false;
         }
     }
+    //cosas especiales de torre
+    else if (pieza->isTorre()) {
+        // comprobacion de piezas intermedias en el movimiento
+        if (orgX == dstX) {
+            for (int i = min(orgY, dstY)+1; i < max(dstY, orgY)-1; i++) {
+                m_pieza* p = tablero[orgX][i];
+                if (p->getIcono() != "-1") { //miramos si hay una ficha
+                    cout << "Movimiento de la ficha invalido" << endl;
+                    return false;
+                }
+            }
+        }
+        else {
+            for (int i = min(orgX, dstX) + 1; i < max(dstX, orgX) - 1; i++) {
+                m_pieza* p = tablero[i][orgY];
+                if (p->getIcono() != "-1") { //miramos si hay una ficha
+                    cout << "Movimiento de la ficha invalido" << endl;
+                    return false;
+                }
+            }
+        }
+    }
+    else if (pieza->isAlfil()) {
+        // comprobacion de piezas intermedias en el movimiento
+        int iniY = min(orgY, dstY);
+        int finY = max(orgY, dstY);
+
+        int iniX = min(orgX, dstX);
+        int finX = max(orgX, dstX);
+
+        for (int i = 1; i < (finY - iniY); i++) {
+            m_pieza* p = tablero[iniX + i][iniY + i];
+            if (p->getIcono() != "-1") { //miramos si hay una ficha
+                cout << "Movimiento de la ficha invalido" << endl;
+                return false;
+            }
+        }
+    }
 
     //mi movimiento no ha generado jaque contra mi
     if (isJaque(jugador, orgX, orgY, dstX, dstY)) {
@@ -336,11 +374,20 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
         m_pieza* p = tablero[i][j];
 
         if (p->getIcono() != "-1") {
+            if (p->getColor() != rey->getColor()) {
+                if (p->isAlfil())
+                {
+                    inJaque = true;
+                    goto deshacerMove;
+                }
+                else if (abs(j - rey->getCol()) == 1 && abs(i - rey->getRow()) == 1 && p->isPeon())
+                {
 
-            if (p->getColor() != rey->getColor() && p->isAlfil())
-            {
-                inJaque = true;
-                goto deshacerMove;
+                    inJaque = true;
+                    goto deshacerMove;
+                }
+                else
+                    break;
             }
             else
                 break;
@@ -357,11 +404,19 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
         m_pieza* p = tablero[i][j];
 
         if (p->getIcono() != "-1") {
-
-            if (p->getColor() != rey->getColor() && p->isAlfil())
-            {
-                inJaque = true;
-                goto deshacerMove;
+            if (p->getColor() != rey->getColor()) {
+                if (p->isAlfil())
+                {
+                    inJaque = true;
+                    goto deshacerMove;
+                }
+                else if (abs(j - rey->getCol()) == 1 && abs(i - rey->getRow() == 1 && p->isPeon()))
+                {
+                    inJaque = true;
+                    goto deshacerMove;
+                }
+                else
+                    break;
             }
             else
                 break;

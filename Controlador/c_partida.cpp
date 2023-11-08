@@ -9,7 +9,6 @@ void m_partida::Jugar() {
 	bool winner = false;
 	bool movValido = false;
 	int jugador = 1;
-
 	m_tablero tablero = m_tablero(); //crear tablero + añadir fichas
 
 	while (winner == false) {
