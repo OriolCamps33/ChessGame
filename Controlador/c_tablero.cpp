@@ -23,33 +23,35 @@ m_tablero::m_tablero(){
     // inicializamos todas las piezas
 
     //BLANCAS
+    m_peon* peon0 = new m_peon(1, 0, 1, "PB");
     m_peon* peon1 = new m_peon(1, 1, 1, "PB");
     m_peon* peon2 = new m_peon(1, 2, 1, "PB");
     m_peon* peon3 = new m_peon(1, 3, 1, "PB");
     m_peon* peon4 = new m_peon(1, 4, 1, "PB");
     m_peon* peon5 = new m_peon(1, 5, 1, "PB");
     m_peon* peon6 = new m_peon(1, 6, 1, "PB");
-    m_peon* peon16 = new m_peon(1, 0, 1, "PB");
+    m_peon* peon7 = new m_peon(1, 7, 1, "PB");
 
     m_torre* torre1 = new m_torre(0, 0, 1, "TB");
-    m_torre* torre2 = new m_torre(0, 6, 1, "TB");
+    m_torre* torre2 = new m_torre(0, 7, 1, "TB");
 
     m_alfil* alfil1 = new m_alfil(0, 2, 1, "AB");
-    m_alfil* alfil2 = new m_alfil(0, 4, 1, "AB");
+    m_alfil* alfil2 = new m_alfil(0, 5, 1, "AB");
 
     m_caballo* caballo1 = new m_caballo(0, 1, 1, "CB");
-    m_caballo* caballo2 = new m_caballo(0, 5, 1, "CB");
+    m_caballo* caballo2 = new m_caballo(0, 6, 1, "CB");
 
     m_rey* rey1 = new m_rey(0, 3, 1, "RB");
     reyBlanco = rey1;
 
+    tablero[peon0->getRow()][peon0->getCol()] = peon0;
     tablero[peon1->getRow()][peon1->getCol()] = peon1;
     tablero[peon2->getRow()][peon2->getCol()] = peon2;
     tablero[peon3->getRow()][peon3->getCol()] = peon3;
     tablero[peon4->getRow()][peon4->getCol()] = peon4;
     tablero[peon5->getRow()][peon5->getCol()] = peon5;
     tablero[peon6->getRow()][peon6->getCol()] = peon6;
-    tablero[peon16->getRow()][peon16->getCol()] = peon16;
+    tablero[peon7->getRow()][peon7->getCol()] = peon7;
 
     tablero[torre1->getRow()][torre1->getCol()] = torre1;
     tablero[torre2->getRow()][torre2->getCol()] = torre2;
@@ -63,26 +65,28 @@ m_tablero::m_tablero(){
     tablero[rey1->getRow()][rey1->getCol()] = rey1;
 
     //NEGRAS
+    m_peon* peon8 = new m_peon(6, 0, 2, "PN");
     m_peon* peon9 = new m_peon(6, 1, 2, "PN");
     m_peon* peon10 = new m_peon(6, 2, 2, "PN");
     m_peon* peon11 = new m_peon(6, 3, 2, "PN");
     m_peon* peon12 = new m_peon(6, 4, 2, "PN");
     m_peon* peon13 = new m_peon(6, 5, 2, "PN");
     m_peon* peon14 = new m_peon(6, 6, 2, "PN");
-    m_peon* peon15 = new m_peon(6, 0, 2, "PN");
+    m_peon* peon15 = new m_peon(6, 7, 2, "PN");
 
     m_torre* torre3 = new m_torre(7, 0, 2, "TN");
-    m_torre* torre4 = new m_torre(7, 6, 2, "TN");
+    m_torre* torre4 = new m_torre(7, 7, 2, "TN");
 
     m_alfil* alfil3 = new m_alfil(7, 2, 2, "AN");
-    m_alfil* alfil4 = new m_alfil(7, 4, 2, "AN");
+    m_alfil* alfil4 = new m_alfil(7, 5, 2, "AN");
 
     m_caballo* caballo3 = new m_caballo(7, 1, 2, "CN");
-    m_caballo* caballo4 = new m_caballo(7, 5, 2, "CN");
+    m_caballo* caballo4 = new m_caballo(7,6, 2, "CN");
 
     m_rey* rey2 = new m_rey(7, 3, 2, "RN");
     reyNegro = rey2;
 
+    tablero[peon8->getRow()][peon8->getCol()] = peon8;
     tablero[peon9->getRow()][peon9->getCol()] = peon9;
     tablero[peon10->getRow()][peon10->getCol()] = peon10;
     tablero[peon11->getRow()][peon11->getCol()] = peon11;
@@ -126,6 +130,9 @@ m_tablero::m_tablero(vector<m_pieza*> piezas)
         if (p->isRey()) {
             if (p->getColor() == 1) {
                 reyBlanco = p;
+            }
+            else {
+                reyNegro = p;
             }
         }
         tablero[p->getRow()][p->getCol()] = p;
@@ -570,7 +577,40 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
 
 
     //jaque por peon
-
+    i = rey->getRow();
+    j = rey->getCol();
+    if (player == 1) {
+        if (tablero[i + 1][j + 1]->getIcono() != "-1" &&
+            tablero[i + 1][j + 1]->isPeon() &&
+            tablero[i + 1][j + 1]->getColor() != rey->getColor()) 
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+        else if (tablero[i + 1][j - 1]->getIcono() != "-1" &&
+            tablero[i + 1][j - 1]->isPeon() &&
+            tablero[i + 1][j - 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
+    else {
+        if (tablero[i - 1][j + 1]->getIcono() != "-1" &&
+            tablero[i - 1][j + 1]->isPeon() &&
+            tablero[i - 1][j + 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+        else if (tablero[i - 1][j - 1]->getIcono() != "-1" &&
+            tablero[i - 1][j - 1]->isPeon() &&
+            tablero[i - 1][j - 1]->getColor() != rey->getColor())
+        {
+            inJaque = true;
+            goto deshacerMove;
+        }
+    }
 
     //deshacer movimiento
 deshacerMove:

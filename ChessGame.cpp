@@ -18,14 +18,14 @@ int main(int argc, char const* argv[])
 		cout << i << " - Hola Mundo!!" << endl;
 	}
 	
-	*/
 
 	m_partida partida = m_partida();
 
 	partida.Jugar();
 
 	bool winner = false;
+	*/
 
-	//testAll();
+	testJaque();
 
 }

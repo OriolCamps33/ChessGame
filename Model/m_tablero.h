@@ -5,7 +5,7 @@
 using namespace std;
 
 #define numRow 8
-#define numCol 7
+#define numCol 8
 
 class m_tablero
 {
