@@ -9,9 +9,13 @@ public:
 	m_partida() {};
 	~m_partida() {};
 
-	void Jugar();
+	string Jugar();
+	void CrearPlayers();
+	void ActualizaPuntuacion(string ganador);
 
 
 private:
 	m_tablero tablero;
+	string player1;
+	string player2;
 };
