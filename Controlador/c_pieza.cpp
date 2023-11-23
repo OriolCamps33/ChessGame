@@ -10,18 +10,18 @@ using namespace std;
 bool m_peon::validMove(int dstX, int dstY)
 {
     // posiciones dentro del tablero
-    assert(dstX < numRow && dstX >= 0);
-    assert(dstY < numCol && dstY >= 0);
+    //assert(dstX < numRow&& dstX >= 0);
+    //assert(dstY < numCol&& dstY >= 0);
 
     int actRow = getRow();
     int actCol = getCol();
 
-    
+
     if (getColor() == 1) {
         //movimiento recto + movimiento doble inicial + diagonal (para matar)
-        if (dstX - actRow == 1 && ( dstY == actCol || abs(dstY - actCol) == 1))
+        if (dstX - actRow == 1 && (dstY == actCol || abs(dstY - actCol) == 1))
             return true;
-        else if (dstX - actRow == 2 && actRow == 1 )
+        else if (dstX - actRow == 2 && actRow == 1)
             return true;
     }
     else {
@@ -66,7 +66,7 @@ bool m_alfil::validMove(int dstX, int dstY)
     int actCol = getCol();
 
     //si se cumple esto esta haciendo diagonal, se ve con un dibujito :)
-    if (abs(actRow - dstX) == abs(actCol - dstY)) { 
+    if (abs(actRow - dstX) == abs(actCol - dstY)) {
         return true;
     }
     else
@@ -94,7 +94,7 @@ bool m_caballo::validMove(int dstX, int dstY)
         return false;
 }
 
-
+ //REY
 bool m_rey::validMove(int dstX, int dstY)
 {
     // posiciones dentro del tablero
@@ -104,8 +104,8 @@ bool m_rey::validMove(int dstX, int dstY)
     int actRow = getRow();
     int actCol = getCol();
 
-    //si se cumple esto esta haciendo diagonal, se ve con un dibujito :)
-    if (abs(actRow - dstX) <= 1 && abs(actCol - dstY) <= 1)
+    //comprovamos solo quiere moverse una casilla
+    if (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1)
         return true;
     else
         return false;

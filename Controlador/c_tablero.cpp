@@ -5,12 +5,12 @@
 #include <iostream>
 using namespace std;
 
-m_tablero::m_tablero(){
+m_tablero::m_tablero() {
     // Creamos el espacio necessario para el tablero
-    tablero = new m_pieza**[numRow];
+    tablero = new m_pieza * *[numRow];
 
     for (int i = 0; i < numRow; i++) {
-        tablero[i] = new m_pieza*[numCol];
+        tablero[i] = new m_pieza * [numCol];
     }
 
     for (int i = 0; i < numRow; i++)
@@ -81,7 +81,7 @@ m_tablero::m_tablero(){
     m_alfil* alfil4 = new m_alfil(7, 5, 2, "AN");
 
     m_caballo* caballo3 = new m_caballo(7, 1, 2, "CN");
-    m_caballo* caballo4 = new m_caballo(7,6, 2, "CN");
+    m_caballo* caballo4 = new m_caballo(7, 6, 2, "CN");
 
     m_rey* rey2 = new m_rey(7, 3, 2, "RN");
     reyNegro = rey2;
@@ -150,7 +150,7 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
     vector<int> org;
     org.push_back(int(origen[1]) - nums);
     org.push_back(int(origen[0]) - letras);
-                                   
+
     // Busqueda de separador       
     int pDest = move.find(" ");
 
@@ -169,6 +169,7 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
 }
 
 bool m_tablero::comprobarMove(string move, int jugador) {
+
     // passamos coordenadas de string a ints
     vector<vector<int>> mov = getMove(move);
     int orgX = mov[0][0];
@@ -176,30 +177,37 @@ bool m_tablero::comprobarMove(string move, int jugador) {
     int dstX = mov[1][0];
     int dstY = mov[1][1];
 
+
+    //posicion fuera tablero
+    if (orgX > numRow || orgX < 0 || orgY > numRow || orgY < 0 || dstX > numRow || dstX < 0 || dstY > numRow || dstY < 0){
+        cout << " Movimiento invalido, posicion fuera del tablero" << endl;
+        return false;
+    }
+
     m_pieza* pieza = tablero[orgX][orgY];
 
     //casilla seleccionada no hay nada
     if (pieza->getIcono() == "-1") {
-        cout << "Movimiento invalido, no hay ninguna pieza en la casilla de origen" << endl;
+        cout << " Movimiento invalido, no hay ninguna pieza en la casilla de origen" << endl;
         return false;
     }
 
     //casilla destino ocupada por ficha aliada
     if (tablero[dstX][dstY]->getIcono() != "-1" && tablero[dstX][dstY]->getColor() == tablero[orgX][orgY]->getColor())
     {
-        cout << "Movimiento invalido, casilla ocupada por ficha aliada" << endl;
+        cout << " Movimiento invalido, casilla ocupada por ficha aliada" << endl;
         return false;
     }
 
     //jugador moviendo ficha del enemigo
     if (tablero[orgX][orgY]->getColor() != jugador) {
-        cout << "Movimiento invalido, ficha del oponente seleccionada" << endl;
+        cout << " Movimiento invalido, ficha del oponente seleccionada" << endl;
         return false;
     }
 
     // si no hay piezas
     if (!pieza->validMove(dstX, dstY)) {
-        cout << "Movimiento de la ficha invalido" << endl;
+        cout << " Movimiento de la ficha invalido" << endl;
         return false;
     }
 
@@ -208,21 +216,21 @@ bool m_tablero::comprobarMove(string move, int jugador) {
     {
         // comprobar que no hay piezas en el destino cuando se mueve en vertical
         if (dstY == orgY && tablero[dstX][dstY]->getIcono() != "-1") {
-            cout << "Movimiento de la ficha invalido" << endl;
+            cout << " Movimiento de la ficha invalido" << endl;
             return false;
         } // lo mismo pero cuando se mueve 2
         else if (dstY == orgY && abs(dstX - orgX) == 2) {
-            if (pieza->getColor() == 1 && tablero[dstX - 1 ][dstY]->getIcono() != "-1") {
-                cout << "Movimiento de la ficha invalido" << endl;
+            if (pieza->getColor() == 1 && tablero[dstX - 1][dstY]->getIcono() != "-1") {
+                cout << " Movimiento de la ficha invalido" << endl;
                 return false;
             }
             else if (pieza->getColor() == 2 && tablero[dstX + 1][dstY]->getIcono() != "-1") {
-                cout << "Movimiento de la ficha invalido" << endl;
+                cout << " Movimiento de la ficha invalido" << endl;
                 return false;
             }
         } // Comprobar que solo se mueve en diagonal para matar una ficha
         else if (dstY != orgY && tablero[dstX][dstY]->getIcono() == "-1") {
-            cout << "Movimiento de la ficha invalido" << endl;
+            cout << " Movimiento de la ficha invalido" << endl;
             return false;
         }
     }
@@ -230,10 +238,10 @@ bool m_tablero::comprobarMove(string move, int jugador) {
     else if (pieza->isTorre()) {
         // comprobacion de piezas intermedias en el movimiento
         if (orgX == dstX) {
-            for (int i = min(orgY, dstY)+1; i < max(dstY, orgY)-1; i++) {
+            for (int i = min(orgY, dstY) + 1; i < max(dstY, orgY) - 1; i++) {
                 m_pieza* p = tablero[orgX][i];
                 if (p->getIcono() != "-1") { //miramos si hay una ficha
-                    cout << "Movimiento de la ficha invalido" << endl;
+                    cout << " Movimiento de la ficha invalido" << endl;
                     return false;
                 }
             }
@@ -242,7 +250,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
             for (int i = min(orgX, dstX) + 1; i < max(dstX, orgX) - 1; i++) {
                 m_pieza* p = tablero[i][orgY];
                 if (p->getIcono() != "-1") { //miramos si hay una ficha
-                    cout << "Movimiento de la ficha invalido" << endl;
+                    cout << " Movimiento de la ficha invalido" << endl;
                     return false;
                 }
             }
@@ -259,7 +267,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
         for (int i = 1; i < (finY - iniY); i++) {
             m_pieza* p = tablero[iniX + i][iniY + i];
             if (p->getIcono() != "-1") { //miramos si hay una ficha
-                cout << "Movimiento de la ficha invalido" << endl;
+                cout << " Movimiento de la ficha invalido" << endl;
                 return false;
             }
         }
@@ -270,6 +278,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
         cout << "Movimiento incorrecto, estas en jaque" << endl;
         return false;
     }
+
 }
 
 
@@ -290,7 +299,7 @@ void m_tablero::mover(string move) { // funcion que permite mover las fichas seg
 }
 
 
-bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
+bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY){
 
     int i;
     int j;
@@ -313,7 +322,7 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
     pieza->setRow(dstX);
     tablero[dstX][dstY] = pieza;
     tablero[orgX][orgY] = new m_pieza();
-    
+
 
 
     //jaque por torre
@@ -362,7 +371,7 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
         m_pieza* p = tablero[rey->getRow()][i];
         if (p->getIcono() != "-1") { //miramos si hay una ficha
 
-            if (p->getColor() != rey->getColor() && p->isTorre()) 
+            if (p->getColor() != rey->getColor() && p->isTorre())
             {
                 inJaque = true;
                 goto deshacerMove;
@@ -373,7 +382,6 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
     }
 
     //jaque por alfil
-    
     // diagonal superior derecha
     i = rey->getRow() + 1;
     j = rey->getCol() + 1;
@@ -475,7 +483,7 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
         j--;
     }
 
-    // comprobar caballos
+    // jaque caballos
     i = rey->getRow();
     j = rey->getCol();
 
@@ -582,7 +590,7 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
     if (player == 1) {
         if (tablero[i + 1][j + 1]->getIcono() != "-1" &&
             tablero[i + 1][j + 1]->isPeon() &&
-            tablero[i + 1][j + 1]->getColor() != rey->getColor()) 
+            tablero[i + 1][j + 1]->getColor() != rey->getColor())
         {
             inJaque = true;
             goto deshacerMove;
@@ -611,6 +619,24 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
             goto deshacerMove;
         }
     }
+
+    /*
+    //jaque por rey
+    i = rey->getRow();
+    j = rey->getCol();
+
+    //miramos que el rey no este pegado al otro rey
+    for (int x = i - 1; x <= i + 1; x++) {
+        for (int y = j - 1; y <= j + 1; y++) {
+            if (0 <= x && x < numRow && 0 <= y && y <= numCol)
+            {
+
+            }
+        }
+    }
+
+    */
+
 
     //deshacer movimiento
 deshacerMove:
