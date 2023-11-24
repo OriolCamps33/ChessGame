@@ -17,7 +17,7 @@ string m_partida::Jugar() {
 	m_tablero tablero = m_tablero(); //crear tablero + añadir fichas
 
 	while (winner == false) {
-		tablero.printaTablero(false);
+		tablero.printaTablero(true);
 
 
 		if(jugador == 1)
@@ -37,22 +37,29 @@ string m_partida::Jugar() {
 			cin >> m1 >> m2;
 			move = m1 + " " + m2;
 
+			if (move == "-1 -1") {
+				winner = true;
+				if ((jugador % 2) + 1 == 1) {
+					ganador = player1;
+				}
+				else {
+					ganador = player2;
+				}
+				goto fin;
+			}
+
 			movValido = tablero.comprobarMove(move, jugador); //comprovamos si el movimiento es valido
 		}
 
 		tablero.mover(move); //movemos
-
-
-		//si no puede mover: fin
-
-		//actualizar tablero
 
 		//cambiar jugador
 		jugador = (jugador % 2) + 1;
 
 		movValido = false;
 	}
-
+fin:
+	cout << " El ganador es " << ganador << "!!!" << endl;
 	return ganador;
 
 }
@@ -72,8 +79,10 @@ void m_partida::CrearPlayers() {
 	ifstream archivo("registro.txt");
 
 	if (!archivo) {
-		cout << "Error al abrir el ejemplo.dat\n";
-		exit(EXIT_FAILURE);
+		ofstream aux("registro.txt");
+		cout << "Se ha creado el registro de partidas\n";
+		aux.close();
+		ifstream archivo("registro.txt");
 	}
 
 	//buscamos si los nombres ya estan en el txt
@@ -106,11 +115,6 @@ void m_partida::CrearPlayers() {
 
 
 void m_partida::ActualizaPuntuacion(string winner) {
-
-	player2 = "Oriol";
-	player1 = "Marc";
-
-
 	int ganador;
 	if (winner == player1)
 		ganador = 1;
@@ -124,14 +128,14 @@ void m_partida::ActualizaPuntuacion(string winner) {
 	ifstream archivoIn("registro.txt");
 
 	if (!archivoIn) {
-		cout << "Error al abrir el ejemplo.dat\n";
+		cout << "Error al abrir el registro.txt\n";
 		exit(EXIT_FAILURE);
 	}
 
 	ofstream archivoOut("copiaRegistro.txt");
 
 	if (!archivoOut) {
-		cout << "Error al abrir el ejemplo.dat\n";
+		cout << "Error al abrir el registro.txt\n";
 		exit(EXIT_FAILURE);
 	}
 

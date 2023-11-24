@@ -165,10 +165,18 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
     vector<vector<int>> mov;
     mov.push_back(org);
     mov.push_back(dst);
+
+
     return mov;
 }
 
 bool m_tablero::comprobarMove(string move, int jugador) {
+
+    //formato correcto
+    if (move.size() > 5) {
+        cout << "No se reconoce el formato" << endl;
+        return false;
+    }
 
     // passamos coordenadas de string a ints
     vector<vector<int>> mov = getMove(move);
@@ -179,7 +187,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
 
 
     //posicion fuera tablero
-    if (orgX > numRow || orgX < 0 || orgY > numRow || orgY < 0 || dstX > numRow || dstX < 0 || dstY > numRow || dstY < 0){
+    if (orgX >= numRow || orgX < 0 || orgY >= numRow || orgY < 0 || dstX >= numRow || dstX < 0 || dstY >= numRow || dstY < 0){
         cout << " Movimiento invalido, posicion fuera del tablero" << endl;
         return false;
     }
@@ -212,75 +220,101 @@ bool m_tablero::comprobarMove(string move, int jugador) {
     }
 
     //cosas especiales de peon
-    if (pieza->isPeon())
-    {
-        // comprobar que no hay piezas en el destino cuando se mueve en vertical
-        if (dstY == orgY && tablero[dstX][dstY]->getIcono() != "-1") {
-            cout << " Movimiento de la ficha invalido" << endl;
-            return false;
-        } // lo mismo pero cuando se mueve 2
-        else if (dstY == orgY && abs(dstX - orgX) == 2) {
-            if (pieza->getColor() == 1 && tablero[dstX - 1][dstY]->getIcono() != "-1") {
-                cout << " Movimiento de la ficha invalido" << endl;
-                return false;
-            }
-            else if (pieza->getColor() == 2 && tablero[dstX + 1][dstY]->getIcono() != "-1") {
-                cout << " Movimiento de la ficha invalido" << endl;
-                return false;
-            }
-        } // Comprobar que solo se mueve en diagonal para matar una ficha
-        else if (dstY != orgY && tablero[dstX][dstY]->getIcono() == "-1") {
-            cout << " Movimiento de la ficha invalido" << endl;
-            return false;
-        }
+    if (pieza->isPeon() && !excepcionesPeon(dstX, dstY, orgX, orgY, pieza)){
+        return false;
     }
     //cosas especiales de torre
-    else if (pieza->isTorre()) {
-        // comprobacion de piezas intermedias en el movimiento
-        if (orgX == dstX) {
-            for (int i = min(orgY, dstY) + 1; i < max(dstY, orgY) - 1; i++) {
-                m_pieza* p = tablero[orgX][i];
-                if (p->getIcono() != "-1") { //miramos si hay una ficha
-                    cout << " Movimiento de la ficha invalido" << endl;
-                    return false;
-                }
-            }
-        }
-        else {
-            for (int i = min(orgX, dstX) + 1; i < max(dstX, orgX) - 1; i++) {
-                m_pieza* p = tablero[i][orgY];
-                if (p->getIcono() != "-1") { //miramos si hay una ficha
-                    cout << " Movimiento de la ficha invalido" << endl;
-                    return false;
-                }
-            }
-        }
+    else if (pieza->isTorre() && !excepcionesTorre(dstX, dstY, orgX, orgY, pieza)) {
+        return false;
     }
-    else if (pieza->isAlfil()) {
-        // comprobacion de piezas intermedias en el movimiento
-        int iniY = min(orgY, dstY);
-        int finY = max(orgY, dstY);
-
-        int iniX = min(orgX, dstX);
-        int finX = max(orgX, dstX);
-
-        for (int i = 1; i < (finY - iniY); i++) {
-            m_pieza* p = tablero[iniX + i][iniY + i];
-            if (p->getIcono() != "-1") { //miramos si hay una ficha
-                cout << " Movimiento de la ficha invalido" << endl;
-                return false;
-            }
-        }
+    //cosas especiales de alfil
+    else if (pieza->isAlfil() && !excepcionesAlfil(dstX, dstY, orgX, orgY, pieza)) {
+        return false;
     }
 
     //mi movimiento no ha generado jaque contra mi
     if (isJaque(jugador, orgX, orgY, dstX, dstY)) {
-        cout << "Movimiento incorrecto, estas en jaque" << endl;
+        cout << " Movimiento incorrecto, estas en jaque" << endl;
         return false;
     }
-
 }
 
+bool m_tablero::excepcionesPeon(int dstX, int dstY, int orgX, int orgY, m_pieza* pieza) {
+    // comprobar que no hay piezas en el destino cuando se mueve en vertical
+    if (dstY == orgY && tablero[dstX][dstY]->getIcono() != "-1") {
+        cout << " Hay fichas en mitad del camino" << endl;
+        return false;
+    } // lo mismo pero cuando se mueve 2
+    else if (dstY == orgY && abs(dstX - orgX) == 2) {
+        if (pieza->getColor() == 1 && tablero[dstX - 1][dstY]->getIcono() != "-1") {
+            cout << " Hay fichas en mitad del camino" << endl;
+            return false;
+        }
+        else if (pieza->getColor() == 2 && tablero[dstX + 1][dstY]->getIcono() != "-1") {
+            cout << " Hay fichas en mitad del camino" << endl;
+            return false;
+        }
+    } // Comprobar que solo se mueve en diagonal para matar una ficha
+    else if (dstY != orgY && tablero[dstX][dstY]->getIcono() == "-1") {
+        cout << " Solo se puede mover en diagonal para matar" << endl;
+        return false;
+    }
+}
+
+
+bool m_tablero::excepcionesAlfil(int dstX, int dstY, int orgX, int orgY, m_pieza* pieza) {
+    // comprobacion de piezas intermedias en el movimiento
+    if (orgY == min(orgY, dstY)) {
+        int positivo = 1;
+        if (orgX > dstX) {
+            positivo = -1;
+        }
+
+        for (int i = 1; i < (dstY - orgY); i++) {
+            m_pieza* p = tablero[orgX + positivo * i][orgY + i];
+            if (p->getIcono() != "-1") { //miramos si hay una ficha
+                cout << " Hay fichas en mitad del camino" << endl;
+                return false;
+            }
+        }
+    }
+    else {
+        int positivo = 1;
+        if (orgX < dstX) {
+            positivo = -1;
+        }
+
+        for (int i = 0; i < (orgY - dstY); i++) {
+            m_pieza* p = tablero[dstX + (positivo * i)][dstY + i];
+            if (p->getIcono() != "-1") { //miramos si hay una ficha
+                cout << " Hay fichas en mitad del camino" << endl;
+                return false;
+            }
+        }
+    }
+}
+
+bool m_tablero::excepcionesTorre(int dstX, int dstY, int orgX, int orgY, m_pieza* pieza) {
+    // comprobacion de piezas intermedias en el movimiento
+    if (orgX == dstX) {
+        for (int i = min(orgY, dstY) + 1; i < max(dstY, orgY) - 1; i++) {
+            m_pieza* p = tablero[orgX][i];
+            if (p->getIcono() != "-1") { //miramos si hay una ficha
+                cout << " Hay fichas en mitad del camino" << endl;
+                return false;
+            }
+        }
+    }
+    else {
+        for (int i = min(orgX, dstX) + 1; i < max(dstX, orgX) - 1; i++) {
+            m_pieza* p = tablero[i][orgY];
+            if (p->getIcono() != "-1") { //miramos si hay una ficha
+                cout << " Hay fichas en mitad del camino" << endl;
+                return false;
+            }
+        }
+    }
+}
 
 
 void m_tablero::mover(string move) { // funcion que permite mover las fichas segun un string

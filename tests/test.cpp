@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <fstream>
 #include "../Model/m_partida.h"
 #include "../Model/m_pieza.h"
 #include "../Model/m_tablero.h"
@@ -141,6 +142,51 @@ TEST(Jaque, rey){
 		int dstY = pzs_false[i][0]->getCol();
 		EXPECT_FALSE(t.isJaque(2, orgX, orgY, dstX, dstY));
 	}
+}
+
+TEST(comprobarMove, valorsLimit) {
+
+	m_tablero tab;
+
+	vector<string> moves_false = { "a9 b1", "a0 b1", "i2 b1", "z3 b1", "a1 a9", "a1 a0", "a1 i2", "a1 z3", "-- --", "<> <>" };
+	for (int i = 0; i < moves_false.size(); i++) {
+		EXPECT_FALSE(tab.comprobarMove(moves_false[i], 1));
+	}
+}
+
+TEST(Registre, ActualitzaPuntuacions) {
+	ofstream archTest("Registro-test.txt");
+
+	archTest << "oriol vs marc 2 - 3" << endl;
+	archTest << "a vs b 0 - 0" << endl;
+	archTest << "z vs y 10 - 3" << endl;
+
+
+}
+
+TEST(comprobarMove, DecisionCoverage) {
+	//decision coverage
+	
+	// if formato correcto
+	m_tablero tab;
+	EXPECT_FALSE(tab.comprobarMove("aaa aaa", 1));
+	EXPECT_TRUE(tab.comprobarMove("a1 a2", 1));
+
+
+	// if posicion fuera tablero
+	EXPECT_FALSE(tab.comprobarMove("z9 a2", 1));
+	EXPECT_TRUE(tab.comprobarMove("a1 a2", 1));
+
+	// if casilla seleccionada no hay nada
+	EXPECT_FALSE(tab.comprobarMove("c3 c4", 1));
+	EXPECT_TRUE(tab.comprobarMove("c2 c4", 1));
+	
+	// if casilla destino ocupada por ficha aliada
+	EXPECT_FALSE(tab.comprobarMove("a1 a2", 1));
+	EXPECT_TRUE(tab.comprobarMove("a1 a2", 1));
+
+	// if jugador moviendo ficha del enemigo
+
 }
 
 
