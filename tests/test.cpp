@@ -7,33 +7,32 @@
 #include "../controlador/c_pieza.cpp"
 #include <gtest/gtest.h>
 
-TEST(ValidMove, Peon) {
+
+TEST(MockObject, validMovePeon) {
 	m_peon* p = new m_peon(1, 2, 1, "PB");
 
 	// test a realizar
 	vector<vector<int>> moves_true = { {2, 2}, {3, 2}, {2, 3}, {2, 1} };
 	vector<vector<int>> moves_false = { {4, 2}, {1, 1}, {1, 3}, {0, 2}, {1, 2} };
 
-	
+
 	for (int i = 0; i < moves_true.size(); i++) {
 		int dstX = moves_true[i][0];
 		int dstY = moves_true[i][1];
 
 		EXPECT_TRUE(p->validMove(dstX, dstY)) << "Error en el move" << dstX << dstY;
 	}
-	
+
 	for (int i = 0; i < moves_false.size(); i++) {
 		int dstX = moves_false[i][0];
 		int dstY = moves_false[i][1];
 
 		EXPECT_FALSE(p->validMove(dstX, dstY)) << "Error en el move" << dstX << dstY;
 	}
-	
+
 
 }
-
-
-TEST(ValidMove, Torre) {
+TEST(MockObject, validMoveTorre) {
 
 	m_torre* t = new m_torre(3, 3, 1, "TB");
 
@@ -55,8 +54,7 @@ TEST(ValidMove, Torre) {
 		EXPECT_FALSE(t->validMove(dstX, dstY)) << "Error en el move " << dstX << ", " << dstY;
 	}
 }
-
-TEST(ValidMove, Alfil) {
+TEST(MockObject, validMoveAlfil) {
 	m_alfil* a = new m_alfil(2, 2, 1, "AB");
 
 	// test a realizar
@@ -78,8 +76,7 @@ TEST(ValidMove, Alfil) {
 		EXPECT_FALSE(a->validMove(dstX, dstY)) << "Error en el move" << dstX << dstY;
 	}
 }
-
-TEST(ValidMove, Caballo) {
+TEST(MockObject, validMoveCaballo) {
 	m_caballo* c = new m_caballo(2, 2, 1, "CB");
 
 	//test a realizar
@@ -101,9 +98,31 @@ TEST(ValidMove, Caballo) {
 		EXPECT_FALSE(c->validMove(dstX, dstY)) << "Error en el move" << dstX << dstY;
 	}
 }
+TEST(MockObject, validMoveRey){
+	m_rey* r = new m_rey(4, 4, 1, "RB");
 
-TEST(Jaque, rey){
+	//test a realitzar
+	vector<vector<int>> moves_true = { {5, 3}, {4, 3}, {3, 3}, {5, 4}, {3, 4}, {5, 5}, {4, 5}, {3, 5} };
+	vector<vector<int>> moves_false = { {4, 6}, {4, 2}, {6, 6}, {2, 2}, {2, 4}, {6, 4} };
 
+
+	for (int i = 0; i < moves_true.size(); i++) {
+		int dstX = moves_true[i][0];
+		int dstY = moves_true[i][1];
+
+		EXPECT_TRUE(r->validMove(dstX, dstY)) << "Error en el move" << dstX << dstY;
+	}
+
+	for (int i = 0; i < moves_false.size(); i++) {
+		int dstX = moves_false[i][0];
+		int dstY = moves_false[i][1];
+
+		EXPECT_FALSE(r->validMove(dstX, dstY)) << "Error en el move" << dstX << dstY;
+	}
+}
+TEST(MockObject, JaqueRey) {
+
+	//creamos fichas que amenazan al rey
 	m_alfil* a1 = new m_alfil(4, 1, 1, "AB");
 	m_alfil* a2 = new m_alfil(5, 1, 1, "AB");
 	m_alfil* a3 = new m_alfil(4, 6, 1, "AB");
@@ -144,11 +163,12 @@ TEST(Jaque, rey){
 	}
 }
 
-TEST(comprobarMove, valorsLimit) {
+TEST(valorsLimit, comprobarMove) {
 
 	m_tablero tab;
 
-	vector<string> moves_false = { "a9 b1", "a0 b1", "i2 b1", "z3 b1", "a1 a9", "a1 a0", "a1 i2", "a1 z3", "-- --", "<> <>" };
+	//combinaciones de intentos de movimiento que pueden fallar, para comprobar que no se puede poner algo incorrecto o salirse del tablero
+	vector<string> moves_false = { "a9 b1", "a0 b1", "i2 b1", "z3 b1", "a1 a9", "a1 a0", "a1 i2", "a1 z3", "b2a b3", "b22 a33", "2c 4c", "-- --", "<> <>" };
 	for (int i = 0; i < moves_false.size(); i++) {
 		EXPECT_FALSE(tab.comprobarMove(moves_false[i], 1));
 	}
@@ -164,33 +184,66 @@ TEST(Registre, ActualitzaPuntuacions) {
 
 }
 
-TEST(comprobarMove, DecisionCoverage) {
-	//decision coverage
+TEST(DecisionPathStatement, comprobarMove) {
 	
-	// if formato correcto
+	//por la estructura del codigo, al hacer decisionCoverage también se hace pathCoverage y statementCoverage
+	
+	//decision coverage
 	m_tablero tab;
-	EXPECT_FALSE(tab.comprobarMove("aaa aaa", 1));
-	EXPECT_TRUE(tab.comprobarMove("a1 a2", 1));
 
+	// if formato correcto
+	EXPECT_FALSE(tab.comprobarMove("aaa aaa", 1));
+	EXPECT_TRUE(tab.comprobarMove("a2 a3", 1));
 
 	// if posicion fuera tablero
 	EXPECT_FALSE(tab.comprobarMove("z9 a2", 1));
-	EXPECT_TRUE(tab.comprobarMove("a1 a2", 1));
+	EXPECT_TRUE(tab.comprobarMove("a2 a3", 1));
 
 	// if casilla seleccionada no hay nada
 	EXPECT_FALSE(tab.comprobarMove("c3 c4", 1));
 	EXPECT_TRUE(tab.comprobarMove("c2 c4", 1));
-	
+
 	// if casilla destino ocupada por ficha aliada
 	EXPECT_FALSE(tab.comprobarMove("a1 a2", 1));
-	EXPECT_TRUE(tab.comprobarMove("a1 a2", 1));
+	EXPECT_TRUE(tab.comprobarMove("a2 a3", 1));
 
 	// if jugador moviendo ficha del enemigo
+	EXPECT_FALSE(tab.comprobarMove("a7 a6", 1));
+	EXPECT_TRUE(tab.comprobarMove("a2 a4", 1));
 
+	// if si el movimiento de la ficha no es correcto
+	EXPECT_FALSE(tab.comprobarMove("a2 a5", 1));
+	EXPECT_TRUE(tab.comprobarMove("b2 b4", 1));
+	tab.~m_tablero();
+
+	//creamos nuevo tablero con fichas para comprovar las excepciones de algunas fichas
+	m_peon* p1 = new m_peon(2, 1, 1, "PB");
+	m_peon* p2 = new m_peon(3, 2, 2, "PN");
+	m_torre* t = new m_torre(3, 1, 1, "TB");
+	m_torre* t2 = new m_torre(1, 6, 2, "TN");
+	m_alfil* a = new m_alfil(2, 2, 1, "AB");
+	m_rey* r = new m_rey(7, 7, 1, "RB");
+
+	m_tablero tab2({ p1, p2, t, t2, a, r});
+	// if cosas especiales de peon, avanzar dos casillas al principio y comer en diagonal
+	EXPECT_FALSE(tab2.comprobarMove("b3 a4", 1)) << "Peon False" << endl;
+	EXPECT_TRUE(tab2.comprobarMove("b3 c4", 1)) << "Peon true" << endl;
+
+	// if cosas especiales de torre, no atravesar otras piezas
+	EXPECT_FALSE(tab2.comprobarMove("b4 h4", 1)) << "Torre False" << endl;
+	EXPECT_TRUE(tab2.comprobarMove("b4 b7", 1)) << "Torre True" << endl;
+	 
+	// if cosas especiales de alfil, no atravesar otras piezas
+	EXPECT_FALSE(tab2.comprobarMove("c3 a5", 1)) << "Alfil False" << endl;
+	EXPECT_TRUE(tab2.comprobarMove("c3 e5", 1)) << "Alfil True" << endl;
+
+	// if el movimiento nos genera jaque
+	EXPECT_FALSE(tab2.comprobarMove("h8 g8", 1)) << "Rey FALSE" << endl;
+	EXPECT_TRUE(tab2.comprobarMove("h8 h7", 1)) << "Rey TRUE" << endl;
 }
 
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
