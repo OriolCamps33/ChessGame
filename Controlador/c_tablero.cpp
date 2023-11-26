@@ -125,6 +125,7 @@ m_tablero::m_tablero(vector<m_pieza*> piezas)
         }
     }
 
+    //añadimos las piezas al tablero
     for (int i = 0; i < piezas.size(); i++) {
         m_pieza* p = piezas[i];
         if (p->isRey()) {
@@ -174,7 +175,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
 
     //formato correcto
     if (move.size() > 5) {
-        cout << "No se reconoce el formato" << endl;
+        cout << " No se reconoce el formato" << endl;
         return false;
     }
 
@@ -187,7 +188,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
 
 
     //posicion fuera tablero
-    if (orgX >= numRow || orgX < 0 || orgY >= numRow || orgY < 0 || dstX >= numRow || dstX < 0 || dstY >= numRow || dstY < 0){
+    if (orgX >= numRow || orgX < 0 || orgY >= numRow || orgY < 0 || dstX >= numRow || dstX < 0 || dstY >= numRow || dstY < 0) {
         cout << " Movimiento invalido, posicion fuera del tablero" << endl;
         return false;
     }
@@ -213,14 +214,15 @@ bool m_tablero::comprobarMove(string move, int jugador) {
         return false;
     }
 
-    // si no hay piezas
+
+    // si el movimiento de la ficha no es correcto
     if (!pieza->validMove(dstX, dstY)) {
         cout << " Movimiento de la ficha invalido" << endl;
         return false;
     }
 
     //cosas especiales de peon
-    if (pieza->isPeon() && !excepcionesPeon(dstX, dstY, orgX, orgY, pieza)){
+    if (pieza->isPeon() && !excepcionesPeon(dstX, dstY, orgX, orgY, pieza)) {
         return false;
     }
     //cosas especiales de torre
@@ -240,6 +242,7 @@ bool m_tablero::comprobarMove(string move, int jugador) {
 }
 
 bool m_tablero::excepcionesPeon(int dstX, int dstY, int orgX, int orgY, m_pieza* pieza) {
+
     // comprobar que no hay piezas en el destino cuando se mueve en vertical
     if (dstY == orgY && tablero[dstX][dstY]->getIcono() != "-1") {
         cout << " Hay fichas en mitad del camino" << endl;
@@ -259,6 +262,7 @@ bool m_tablero::excepcionesPeon(int dstX, int dstY, int orgX, int orgY, m_pieza*
         cout << " Solo se puede mover en diagonal para matar" << endl;
         return false;
     }
+    return true;
 }
 
 
@@ -292,6 +296,7 @@ bool m_tablero::excepcionesAlfil(int dstX, int dstY, int orgX, int orgY, m_pieza
             }
         }
     }
+    return true;
 }
 
 bool m_tablero::excepcionesTorre(int dstX, int dstY, int orgX, int orgY, m_pieza* pieza) {
@@ -314,10 +319,12 @@ bool m_tablero::excepcionesTorre(int dstX, int dstY, int orgX, int orgY, m_pieza
             }
         }
     }
+    return true;
 }
 
 
 void m_tablero::mover(string move) { // funcion que permite mover las fichas segun un string
+
     // passamos coordenadas de string a ints
     vector<vector<int>> mov = getMove(move);
     int orgX = mov[0][0];
@@ -333,7 +340,7 @@ void m_tablero::mover(string move) { // funcion que permite mover las fichas seg
 }
 
 
-bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY){
+bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY) {
 
     int i;
     int j;
@@ -622,39 +629,43 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY){
     i = rey->getRow();
     j = rey->getCol();
     if (player == 1) {
-        if (tablero[i + 1][j + 1]->getIcono() != "-1" &&
-            tablero[i + 1][j + 1]->isPeon() &&
-            tablero[i + 1][j + 1]->getColor() != rey->getColor())
-        {
-            inJaque = true;
-            goto deshacerMove;
-        }
-        else if (tablero[i + 1][j - 1]->getIcono() != "-1" &&
-            tablero[i + 1][j - 1]->isPeon() &&
-            tablero[i + 1][j - 1]->getColor() != rey->getColor())
-        {
-            inJaque = true;
-            goto deshacerMove;
+        if (j + 1 < numCol && i + 1 < numRow && j - 1 >= 0) {
+            if (tablero[i + 1][j + 1]->getIcono() != "-1" &&
+                tablero[i + 1][j + 1]->isPeon() &&
+                tablero[i + 1][j + 1]->getColor() != rey->getColor())
+            {
+                inJaque = true;
+                goto deshacerMove;
+            }
+            else if (tablero[i + 1][j - 1]->getIcono() != "-1" &&
+                tablero[i + 1][j - 1]->isPeon() &&
+                tablero[i + 1][j - 1]->getColor() != rey->getColor())
+            {
+                inJaque = true;
+                goto deshacerMove;
+            }
         }
     }
     else {
-        if (tablero[i - 1][j + 1]->getIcono() != "-1" &&
-            tablero[i - 1][j + 1]->isPeon() &&
-            tablero[i - 1][j + 1]->getColor() != rey->getColor())
-        {
-            inJaque = true;
-            goto deshacerMove;
-        }
-        else if (tablero[i - 1][j - 1]->getIcono() != "-1" &&
-            tablero[i - 1][j - 1]->isPeon() &&
-            tablero[i - 1][j - 1]->getColor() != rey->getColor())
-        {
-            inJaque = true;
-            goto deshacerMove;
+        if (j + 1 < numCol && i - 1 >= 0 && j - 1 >= 0) {
+            if (tablero[i - 1][j + 1]->getIcono() != "-1" &&
+                tablero[i - 1][j + 1]->isPeon() &&
+                tablero[i - 1][j + 1]->getColor() != rey->getColor())
+            {
+                inJaque = true;
+                goto deshacerMove;
+            }
+            else if (tablero[i - 1][j - 1]->getIcono() != "-1" &&
+                tablero[i - 1][j - 1]->isPeon() &&
+                tablero[i - 1][j - 1]->getColor() != rey->getColor())
+            {
+                inJaque = true;
+                goto deshacerMove;
+            }
         }
     }
-
-    /*
+    
+    
     //jaque por rey
     i = rey->getRow();
     j = rey->getCol();
@@ -662,15 +673,17 @@ bool m_tablero::isJaque(int player, int orgX, int orgY, int dstX, int dstY){
     //miramos que el rey no este pegado al otro rey
     for (int x = i - 1; x <= i + 1; x++) {
         for (int y = j - 1; y <= j + 1; y++) {
-            if (0 <= x && x < numRow && 0 <= y && y <= numCol)
+            if (x >= 0 && x < numRow && y >= 0 && y < numCol) //miramos que este dentro de tablero
             {
-
+                if (tablero[x][y]->isRey() && tablero[x][y]->getColor() != rey->getColor())
+                {
+                    inJaque = true;
+                    goto deshacerMove;
+                }
             }
         }
     }
-
-    */
-
+    
 
     //deshacer movimiento
 deshacerMove:

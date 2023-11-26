@@ -9,9 +9,6 @@ using namespace std;
 //PEON
 bool m_peon::validMove(int dstX, int dstY)
 {
-    // posiciones dentro del tablero
-    //assert(dstX < numRow&& dstX >= 0);
-    //assert(dstY < numCol&& dstY >= 0);
 
     int actRow = getRow();
     int actCol = getCol();
@@ -38,11 +35,6 @@ bool m_peon::validMove(int dstX, int dstY)
 //TORRE
 bool m_torre::validMove(int dstX, int dstY)
 {
-
-    // posiciones dentro del tablero
-    assert(dstX < numRow&& dstX >= 0);
-    assert(dstY < numCol&& dstY >= 0);
-
     int actRow = getRow();
     int actCol = getCol();
 
@@ -58,10 +50,6 @@ bool m_torre::validMove(int dstX, int dstY)
 //ALFIL
 bool m_alfil::validMove(int dstX, int dstY)
 {
-    // posiciones dentro del tablero
-    assert(dstX < numRow&& dstX >= 0);
-    assert(dstY < numCol&& dstY >= 0);
-
     int actRow = getRow();
     int actCol = getCol();
 
@@ -76,10 +64,6 @@ bool m_alfil::validMove(int dstX, int dstY)
 //CABALLO
 bool m_caballo::validMove(int dstX, int dstY)
 {
-    // posiciones dentro del tablero
-    assert(dstX < numRow&& dstX >= 0);
-    assert(dstY < numCol&& dstY >= 0);
-
     int actRow = getRow();
     int actCol = getCol();
 
@@ -97,15 +81,13 @@ bool m_caballo::validMove(int dstX, int dstY)
  //REY
 bool m_rey::validMove(int dstX, int dstY)
 {
-    // posiciones dentro del tablero
-    assert(dstX < numRow&& dstX >= 0);
-    assert(dstY < numCol&& dstY >= 0);
-
     int actRow = getRow();
     int actCol = getCol();
 
     //comprovamos solo quiere moverse una casilla
-    if (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1)
+    if ( (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 1) || //MOVIEMIENTO EN DIAGONAL
+        (abs(actRow - dstX) == 1 && abs(actCol - dstY) == 0) ||  //MOVIMIENTO EN VERTICAL
+        (abs(actRow - dstX) == 0 && abs(actCol - dstY) == 1) ) //MOVIMIENTO HORIZONTAL
         return true;
     else
         return false;

@@ -9,18 +9,20 @@ using namespace std;
 
 string m_partida::Jugar() {
 
-	bool winner = false;
+	//variables que utilizaremos
 	string ganador;
 	bool movValido = false;
 	int jugador = 1;
 
 	m_tablero tablero = m_tablero(); //crear tablero + añadir fichas
 
-	while (winner == false) {
+	//bucle principal
+	while (true) {
+
+		//couts tablero + nombre del jugador actual
 		tablero.printaTablero(true);
 
-
-		if(jugador == 1)
+		if (jugador == 1)
 			cout << endl << " Turno de " << player1 << endl;
 		else
 			cout << endl << " Turno de " << player2 << endl;
@@ -37,8 +39,8 @@ string m_partida::Jugar() {
 			cin >> m1 >> m2;
 			move = m1 + " " + m2;
 
+			//si el movimiento es -1 -1 se acaba el game (jaque mate)
 			if (move == "-1 -1") {
-				winner = true;
 				if ((jugador % 2) + 1 == 1) {
 					ganador = player1;
 				}
@@ -48,9 +50,11 @@ string m_partida::Jugar() {
 				goto fin;
 			}
 
+			//comprobamos que el movimiento no da error
 			movValido = tablero.comprobarMove(move, jugador); //comprovamos si el movimiento es valido
 		}
 
+		//una vez fuera del bucle es que el movimiento es correcto, asi que se hace el movimiento actualizando las fichas
 		tablero.mover(move); //movemos
 
 		//cambiar jugador
@@ -66,7 +70,7 @@ fin:
 
 void m_partida::CrearPlayers() {
 
-	//preguntamos jugadores
+	//preguntamos nombre jugadores
 	cout << "Nombre jugador 1: ";
 	cin >> player1;
 	cout << "Nombre jugador 2: ";
@@ -89,7 +93,6 @@ void m_partida::CrearPlayers() {
 	string lineaArchivo;
 	bool encontrado1 = false;
 	bool encontrado2 = false;
-
 
 	while (getline(archivo, lineaArchivo)) {
 
@@ -115,6 +118,8 @@ void m_partida::CrearPlayers() {
 
 
 void m_partida::ActualizaPuntuacion(string winner) {
+
+	//miramos que jugador ha ganado
 	int ganador;
 	if (winner == player1)
 		ganador = 1;
