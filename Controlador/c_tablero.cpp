@@ -140,7 +140,13 @@ m_tablero::m_tablero(vector<m_pieza*> piezas)
     }
 }
 
-vector<vector<int>> getMove(string move) {  // combierte el movimiento de string a vector de posiciones
+vector<vector<int>> m_tablero::getMove(string move, bool &result) {  // combierte el movimiento de string a vector de posiciones
+    //formato correcto
+    if (move.size() > 5) {
+        cout << " No se reconoce el formato" << endl;
+        result = false;
+    }
+
     // Parametros para passar de str a int
     int letras = 97;
     int nums = 49;
@@ -148,9 +154,9 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
     // separacion del movimiento origen y posterior guardado en vector
     string origen;
     origen.assign(move, 0, 2);
-    vector<int> org;
-    org.push_back(int(origen[1]) - nums);
-    org.push_back(int(origen[0]) - letras);
+    int orgX = int(origen[1]) - nums;
+    int orgY = int(origen[0]) - letras;
+    vector<int> org = { orgX, orgY };
 
     // Busqueda de separador       
     int pDest = move.find(" ");
@@ -158,40 +164,37 @@ vector<vector<int>> getMove(string move) {  // combierte el movimiento de string
     // separacion del movimiento destino y posterior guardado en vector
     string destino;
     destino.assign(move, pDest + 1, 2);
-    vector<int> dst;
-    dst.push_back(int(destino[1]) - nums);
-    dst.push_back(int(destino[0]) - letras);
+    int dstX = int(destino[1]) - nums;
+    int dstY = int(destino[0]) - letras;
+
+    vector<int> dst = { dstX, dstY };
 
     // return del vector final
     vector<vector<int>> mov;
     mov.push_back(org);
     mov.push_back(dst);
-
+    //posicion fuera tablero
+    if (orgX >= numRow || orgX < 0 || orgY >= numRow || orgY < 0 || dstX >= numRow || dstX < 0 || dstY >= numRow || dstY < 0) {
+        cout << " Movimiento invalido, posicion fuera del tablero" << endl;
+        result = false;
+    }
 
     return mov;
 }
 
 bool m_tablero::comprobarMove(string move, int jugador) {
-
-    //formato correcto
-    if (move.size() > 5) {
-        cout << " No se reconoce el formato" << endl;
-        return false;
-    }
-
     // passamos coordenadas de string a ints
-    vector<vector<int>> mov = getMove(move);
+    bool result = true;
+    vector<vector<int>> mov = getMove(move, result);
+
+    if (!result) {
+        return result;
+    }
+  
     int orgX = mov[0][0];
     int orgY = mov[0][1];
     int dstX = mov[1][0];
     int dstY = mov[1][1];
-
-
-    //posicion fuera tablero
-    if (orgX >= numRow || orgX < 0 || orgY >= numRow || orgY < 0 || dstX >= numRow || dstX < 0 || dstY >= numRow || dstY < 0) {
-        cout << " Movimiento invalido, posicion fuera del tablero" << endl;
-        return false;
-    }
 
     m_pieza* pieza = tablero[orgX][orgY];
 
@@ -326,7 +329,8 @@ bool m_tablero::excepcionesTorre(int dstX, int dstY, int orgX, int orgY, m_pieza
 void m_tablero::mover(string move) { // funcion que permite mover las fichas segun un string
 
     // passamos coordenadas de string a ints
-    vector<vector<int>> mov = getMove(move);
+    bool result;
+    vector<vector<int>> mov = getMove(move, result);
     int orgX = mov[0][0];
     int orgY = mov[0][1];
     int dstX = mov[1][0];

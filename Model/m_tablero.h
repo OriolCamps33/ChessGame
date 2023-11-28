@@ -19,6 +19,7 @@ public:
     ~m_tablero() {};
 
     void mover(string move);
+    vector<vector<int>> getMove(string move, bool &result);
     bool comprobarMove(string move, int jugador);
     bool isJaque(int player, int orgX, int orgY, int dstX, int dstY);
     void printaTablero(bool clean);

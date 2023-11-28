@@ -18,13 +18,13 @@ bool m_peon::validMove(int dstX, int dstY)
         //movimiento recto + movimiento doble inicial + diagonal (para matar)
         if (dstX - actRow == 1 && (dstY == actCol || abs(dstY - actCol) == 1))
             return true;
-        else if (dstX - actRow == 2 && actRow == 1)
+        else if (dstX - actRow == 2 && actRow == 1 && dstY == actCol)
             return true;
     }
     else {
         if (dstX - actRow == -1 && (dstY == actCol || abs(dstY - actCol) == 1))
             return true;
-        else if (dstX - actRow == -2 && actRow == numRow - 2)
+        else if (dstX - actRow == -2 && actRow == numRow - 2 && dstY == actCol)
             return true;
     }
 

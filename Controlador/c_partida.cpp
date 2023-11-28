@@ -18,9 +18,10 @@ string m_partida::Jugar() {
 
 	//bucle principal
 	while (true) {
-
 		//couts tablero + nombre del jugador actual
 		tablero.printaTablero(true);
+
+		cout << endl << " " << player1 << " vs " << player2 << ": " << puntos1 << "-" << puntos2 << endl;
 
 		if (jugador == 1)
 			cout << endl << " Turno de " << player1 << endl;
@@ -108,12 +109,54 @@ void m_partida::CrearPlayers() {
 	ofstream archivo2("registro.txt", ios::app);
 
 	//si los nombres no estan los añadimos
-	if (encontrado1 == false && encontrado2 == false) {
+	if (!encontrado1 && !encontrado2) {
 		archivo2 << combinacion1 + " 0 - 0" << endl;
+		puntos1 = "0";
+		puntos2 = "0";
+	}
+
+	if (encontrado1) {
+		vector<string> puntos = getPuntuacions(combinacion1);
+		puntos1 = puntos[0];
+		puntos2 = puntos[1];
+	}
+	else if(encontrado2)
+	{
+		vector<string> puntos = getPuntuacions(combinacion2);
+		puntos1 = puntos[0];
+		puntos2 = puntos[1];
+
 	}
 
 	archivo2.close();
 
+}
+
+vector<string> m_partida::getPuntuacions(string combinacion)
+{
+	string lineaArchivo;
+	ifstream archivoIn("registro.txt");
+
+	if (!archivoIn) {
+		cout << "Error al abrir el registro.txt\n";
+		exit(EXIT_FAILURE);
+	}
+	
+	vector<string> punts;
+
+	while (getline(archivoIn, lineaArchivo)) {
+		if (lineaArchivo.find(combinacion) != string::npos) {
+			int longitud = combinacion.length() + 1; //sacamos longitud y sumamos 1 para eliminar el espacio en blanco
+			string puntos = lineaArchivo.erase(0, longitud);
+
+			size_t posicion = puntos.find('-'); //buscamos la posicion del guion
+			string primerNum = puntos.substr(0, posicion); //sacamos el primer numero y despues el segundo
+			string segundoNum = puntos.substr(posicion + 1);
+			punts.push_back(primerNum);
+			punts.push_back(segundoNum);
+		}
+	}
+	return punts;
 }
 
 
